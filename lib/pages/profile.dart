@@ -1,0 +1,625 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:pp_flutter/blocs/logout/logout_bloc.dart';
+import 'package:pp_flutter/blocs/logout/logout_event.dart';
+import 'package:pp_flutter/blocs/logout/logout_state.dart';
+import 'package:pp_flutter/blocs/ulasan/ulasan_bloc.dart';
+import 'package:pp_flutter/blocs/ulasan/ulasan_event.dart';
+import 'package:pp_flutter/blocs/ulasan/ulasan_state.dart';
+import 'package:pp_flutter/models/response/profile_response.dart';
+import 'package:pp_flutter/pages/signin.dart';
+import 'package:pp_flutter/pages/ubah_menit.dart';
+import 'package:pp_flutter/pages/ubah_profile.dart';
+import 'package:pp_flutter/repositories/auth_repository.dart';
+
+class ProfilePage extends StatefulWidget {
+  const ProfilePage({super.key});
+
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  final TextEditingController _ulasanController = TextEditingController();
+  ProfileResponse? profileData;
+  bool isLoading = true;
+  String selectedAvatar = 'assets/avatar/ava1.png';
+
+  @override
+  void initState() {
+    super.initState();
+    fetchProfile();
+    _ulasanController.addListener(() {
+      setState(() {});
+    });
+  }
+
+  Future<void> fetchProfile() async {
+    try {
+      final authRepo = AuthRepository();
+      final data = await authRepo.getProfile();
+      setState(() {
+        profileData = data;
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Gagal mengambil data profil: $e')),
+      );
+    }
+  }
+
+  void _showAvatarPicker() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
+      ),
+      builder: (context) {
+        final avatars = List.generate(
+          6,
+          (index) => 'assets/avatar/ava${index + 1}.png',
+        );
+
+        return Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                "Pilih avatar untuk profile kamu",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 20),
+              GridView.count(
+                crossAxisCount: 3,
+                shrinkWrap: true,
+                mainAxisSpacing: 16,
+                crossAxisSpacing: 16,
+                children:
+                    avatars.map((path) {
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                          setState(() {
+                            selectedAvatar = path;
+                          });
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color:
+                                  selectedAvatar == path
+                                      ? Colors.deepPurple
+                                      : Colors.transparent,
+                              width: 2,
+                            ),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          padding: const EdgeInsets.all(4),
+                          child: Image.asset(path),
+                        ),
+                      );
+                    }).toList(),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showCustomSnackBar(
+    BuildContext context,
+    String message, {
+    bool isSuccess = true,
+  }) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Container(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color:
+                      isSuccess
+                          ? Colors.greenAccent
+                          : Colors.red.withOpacity(0.2),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  isSuccess ? Icons.check_circle : Icons.error,
+                  color: isSuccess ? Colors.green : Colors.red,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  message,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        backgroundColor: Color(0xFFFAAE2B),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        margin: const EdgeInsets.all(16),
+        duration: const Duration(seconds: 2),
+        elevation: 4,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (isLoading) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
+    return Scaffold(
+      backgroundColor: const Color(0xFFFAAE2B),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Container(
+                  height: 160,
+                  width: double.infinity,
+                  color: const Color(0xFFFAAE2B),
+                  child: SvgPicture.asset(
+                    'assets/profile/profile.svg',
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                Positioned(
+                  top: 40,
+                  right: 20,
+                  child: BlocListener<LogoutBloc, LogoutState>(
+                    listener: (context, state) {
+                      if (state is LogoutSuccess) {
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const SigninPages(),
+                          ),
+                          (route) => false,
+                        );
+                      } else if (state is LogoutFailure) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text("Logout gagal: ${state.message}"),
+                          ),
+                        );
+                      }
+                    },
+                    child: GestureDetector(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              title: Text(
+                                "Konfirmasi Logout",
+                                style: GoogleFonts.quicksand(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              content: Text(
+                                "Apakah kamu yakin ingin keluar dari akun?",
+                                style: GoogleFonts.quicksand(
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              actions: [
+                                TextButton(
+                                  child: const Text("Batal"),
+                                  onPressed: () => Navigator.of(context).pop(),
+                                ),
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xffFFDDFAA),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                    context.read<LogoutBloc>().add(
+                                      LogoutRequested(),
+                                    );
+                                  },
+                                  child: const Text("Ya"),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.2),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.logout,
+                          color: Colors.black87,
+                          size: 24,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+            Stack(
+              clipBehavior: Clip.none,
+              alignment: Alignment.center,
+              children: [
+                Container(
+                  width: double.infinity,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(50),
+                    ),
+                  ),
+                  padding: const EdgeInsets.fromLTRB(20, 70, 20, 30),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Center(
+                        child: Column(
+                          children: [
+                            Text(
+                              profileData?.name ?? '',
+                              style: GoogleFonts.quicksand(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              '${profileData?.jenjang ?? ''} ${profileData?.kelas ?? ''}',
+                              style: GoogleFonts.quicksand(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                          ],
+                        ),
+                      ),
+                      // BlocListener<LogoutBloc, LogoutState>(
+                      //   listener: (context, state) {
+                      //     if (state is LogoutSuccess) {
+                      //       Navigator.pushAndRemoveUntil(
+                      //         context,
+                      //         MaterialPageRoute(
+                      //           builder: (_) => const SigninPages(),
+                      //         ),
+                      //         (route) => false,
+                      //       );
+                      //     } else if (state is LogoutFailure) {
+                      //       ScaffoldMessenger.of(context).showSnackBar(
+                      //         SnackBar(
+                      //           content: Text("Logout gagal: ${state.message}"),
+                      //         ),
+                      //       );
+                      //     }
+                      //   },
+                      //   child: IconButton(
+                      //     icon: const Icon(
+                      //       Icons.logout,
+                      //       color: Colors.redAccent,
+                      //       size: 28,
+                      //     ),
+                      //     onPressed: () {
+                      //       showDialog(
+                      //         context: context,
+                      //         builder: (BuildContext context) {
+                      //           return AlertDialog(
+                      //             shape: RoundedRectangleBorder(
+                      //               borderRadius: BorderRadius.circular(20),
+                      //             ),
+                      //             title: Text(
+                      //               "Konfirmasi Logout",
+                      //               style: GoogleFonts.quicksand(
+                      //                 fontSize: 20,
+                      //                 fontWeight: FontWeight.bold,
+                      //               ),
+                      //             ),
+                      //             content: Text(
+                      //               "Apakah kamu yakin ingin keluar dari akun?",
+                      //               style: GoogleFonts.quicksand(
+                      //                 fontWeight: FontWeight.w500,
+                      //               ),
+                      //             ),
+                      //             actions: [
+                      //               TextButton(
+                      //                 child: const Text("Batal"),
+                      //                 onPressed:
+                      //                     () => Navigator.of(context).pop(),
+                      //               ),
+                      //               ElevatedButton(
+                      //                 style: ElevatedButton.styleFrom(
+                      //                   backgroundColor: const Color(
+                      //                     0xffFFDDFAA,
+                      //                   ),
+                      //                 ),
+                      //                 onPressed: () {
+                      //                   Navigator.of(context).pop();
+                      //                   context.read<LogoutBloc>().add(
+                      //                     LogoutRequested(),
+                      //                   );
+                      //                 },
+                      //                 child: const Text("Ya"),
+                      //               ),
+                      //             ],
+                      //           );
+                      //         },
+                      //       );
+                      //     },
+                      //   ),
+                      // ),
+                      Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: const Color(0xFFFFD77A)),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Colors.orangeAccent,
+                              offset: Offset(2, 2),
+                              blurRadius: 2,
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Total XP : ${profileData?.xpTotal ?? 0}",
+                              style: GoogleFonts.montserrat(fontSize: 15),
+                            ),
+                            SvgPicture.asset(
+                              'assets/profile/bi_trophy.svg',
+                              width: 20,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 30),
+                      Text(
+                        "Ubah Profile",
+                        style: GoogleFonts.montserrat(color: Colors.grey),
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFFFC860),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            padding: const EdgeInsets.all(8),
+                            child: SvgPicture.asset(
+                              'assets/profile/icon-profile.svg',
+                              width: 20,
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Text(
+                              profileData?.name ?? '',
+                              style: GoogleFonts.montserrat(fontSize: 14),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const UbahProfile(),
+                                ),
+                              );
+                            },
+                            child: SvgPicture.asset(
+                              'assets/profile/icon-pencil.svg',
+                            ),
+                          ),
+                        ],
+                      ),
+                      const Divider(height: 30),
+                      Text(
+                        "Ubah Waktu Belajar",
+                        style: GoogleFonts.montserrat(color: Colors.grey),
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFFFC860),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            padding: const EdgeInsets.all(8),
+                            child: SvgPicture.asset(
+                              'assets/profile/gala_clock.svg',
+                              width: 20,
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Text(
+                              "${profileData?.belajarMenitPerHari ?? 0} Menit",
+                              style: GoogleFonts.montserrat(fontSize: 14),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const UbahMenit(),
+                                ),
+                              );
+                            },
+                            child: SvgPicture.asset(
+                              'assets/profile/icon-pencil.svg',
+                            ),
+                          ),
+                        ],
+                      ),
+                      const Divider(height: 30),
+                      Text(
+                        "Ulasan",
+                        style: GoogleFonts.montserrat(color: Colors.grey),
+                      ),
+                      const SizedBox(height: 10),
+                      BlocListener<UlasanBloc, UlasanState>(
+                        listener: (context, state) {
+                          if (state is UlasanSuccess) {
+                            _ulasanController.clear();
+                            _showCustomSnackBar(
+                              context,
+                              "Ulasan berhasil dikirim!",
+                            );
+                          } else if (state is UlasanFailure) {
+                            _showCustomSnackBar(
+                              context,
+                              "Gagal mengirim: ${state.message}",
+                              isSuccess: false,
+                            );
+                          }
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black12,
+                                offset: Offset(2, 2),
+                                blurRadius: 4,
+                              ),
+                            ],
+                          ),
+                          child: Stack(
+                            children: [
+                              TextField(
+                                controller: _ulasanController,
+                                minLines: 4,
+                                maxLines: 6,
+                                decoration: InputDecoration(
+                                  hintText:
+                                      "Berikan pendapatmu tentang aplikasi ini...",
+                                  hintStyle: GoogleFonts.montserrat(
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 14,
+                                  ),
+                                  contentPadding: const EdgeInsets.fromLTRB(
+                                    12,
+                                    12,
+                                    48,
+                                    12,
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderSide: BorderSide.none,
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                bottom: 8,
+                                right: 8,
+                                child: GestureDetector(
+                                  onTap:
+                                      _ulasanController.text.isNotEmpty
+                                          ? () {
+                                            context.read<UlasanBloc>().add(
+                                              KirimUlasanEvent(
+                                                _ulasanController.text,
+                                              ),
+                                            );
+                                          }
+                                          : null,
+                                  child: Icon(
+                                    Icons.send,
+                                    size: 20,
+                                    color:
+                                        _ulasanController.text.isNotEmpty
+                                            ? const Color(0xffFBBE55)
+                                            : Colors.grey,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Positioned(
+                  top: -60,
+                  child: Stack(
+                    children: [
+                      CircleAvatar(
+                        radius: 55,
+                        backgroundColor: Colors.white,
+                        child: CircleAvatar(
+                          radius: 50,
+                          backgroundImage: AssetImage(selectedAvatar),
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: Material(
+                          elevation: 2,
+                          shape: const CircleBorder(),
+                          child: InkWell(
+                            onTap: _showAvatarPicker,
+                            child: const CircleAvatar(
+                              radius: 14,
+                              backgroundColor: Colors.white,
+                              child: Icon(
+                                Icons.camera_alt,
+                                size: 16,
+                                color: Colors.orange,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
