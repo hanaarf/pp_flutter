@@ -66,10 +66,7 @@ class AuthRepository {
     final token = await _storage.read(key: 'token');
     final response = await http.post(
       Uri.parse('$baseUrl/complete-registration'),
-      headers: {
-        'Authorization': 'Bearer $token',
-        'Accept': 'application/json',
-      },
+      headers: {'Authorization': 'Bearer $token', 'Accept': 'application/json'},
       body: request.toMap(),
     );
 
@@ -95,10 +92,7 @@ class AuthRepository {
     final token = await _storage.read(key: 'token');
     final response = await http.get(
       Uri.parse('$baseUrl/profile'),
-      headers: {
-        'Authorization': 'Bearer $token',
-        'Accept': 'application/json',
-      },
+      headers: {'Authorization': 'Bearer $token', 'Accept': 'application/json'},
     );
 
     if (response.statusCode == 200) {
@@ -106,6 +100,44 @@ class AuthRepository {
       return ProfileResponse.fromJson(data['data']);
     } else {
       throw Exception('Gagal mengambil data profil');
+    }
+  }
+
+  Future<void> updateMenitBelajar(int menit) async {
+    final token = await _storage.read(key: 'token');
+
+    final response = await http.post(
+      Uri.parse('$baseUrl/siswa/update-menit'),
+      headers: {'Authorization': 'Bearer $token', 'Accept': 'application/json'},
+      body: {'menit': menit.toString()},
+    );
+
+    final json = jsonDecode(response.body);
+    if (response.statusCode != 200 || json['success'] != true) {
+      throw Exception(json['message'] ?? 'Gagal update menit belajar');
+    }
+  }
+
+  Future<void> updateProfile({
+    required String name,
+    required int jenjangId,
+    required int kelasId,
+  }) async {
+    final token = await _storage.read(key: 'token');
+
+    final response = await http.post(
+      Uri.parse('$baseUrl/siswa/update-profile'),
+      headers: {'Authorization': 'Bearer $token', 'Accept': 'application/json'},
+      body: {
+        'name': name,
+        'jenjang_id': jenjangId.toString(),
+        'kelas_id': kelasId.toString(),
+      },
+    );
+
+    final json = jsonDecode(response.body);
+    if (response.statusCode != 200 || json['success'] != true) {
+      throw Exception(json['message'] ?? 'Gagal mengubah profil');
     }
   }
 }

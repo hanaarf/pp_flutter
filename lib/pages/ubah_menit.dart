@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pp_flutter/blocs/menitBelajar/ubah_menit_bloc.dart';
+import 'package:pp_flutter/blocs/menitBelajar/ubah_menit_event.dart';
+import 'package:pp_flutter/blocs/menitBelajar/ubah_menit_state.dart';
 import 'package:pp_flutter/pages/component/bottom_navbar.dart';
 
 class UbahMenit extends StatefulWidget {
@@ -12,6 +16,55 @@ class UbahMenit extends StatefulWidget {
 
 class _UbahMenitState extends State<UbahMenit> {
   String? selectedMenit;
+
+  void _showCustomSnackBar(
+    BuildContext context,
+    String message, {
+    bool isSuccess = true,
+  }) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Container(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color:
+                      isSuccess
+                          ? Colors.greenAccent
+                          : Colors.red.withOpacity(0.2),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  isSuccess ? Icons.check_circle : Icons.error,
+                  color: isSuccess ? Colors.green : Colors.red,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  message,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        backgroundColor: Color(0xFFFAAE2B),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        margin: const EdgeInsets.all(16),
+        duration: const Duration(seconds: 2),
+        elevation: 4,
+      ),
+    );
+  }
 
   void _pilihKelas(String kelas) {
     setState(() {
@@ -147,52 +200,74 @@ class _UbahMenitState extends State<UbahMenit> {
                           ),
                         ),
                         padding: const EdgeInsets.fromLTRB(20, 70, 20, 120),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(height: 30),
-                            Center(
-                              child: Text(
-                                "Ubah Waktu Belajarmu!",
-                                style: GoogleFonts.quicksand(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
+                        child: BlocListener<UbahMenitBloc, UbahMenitState>(
+                          listener: (context, state) {
+                            if (state is UbahMenitSuccess) {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => BottomNavbar(initialIndex: 2),
+                                ),
+                              );
+                              _showCustomSnackBar(
+                                context,
+                                "Waktu belajar berhasil diubah!",
+                              );
+                            } else if (state is UbahMenitFailure) {
+                              _showCustomSnackBar(
+                                context,
+                                state.message,
+                                isSuccess: false,
+                              );
+                            }
+                          },
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 30),
+                              Center(
+                                child: Text(
+                                  "Ubah Waktu Belajarmu!",
+                                  style: GoogleFonts.quicksand(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
-                            ),
-                            SizedBox(height: 50),
-                            _buildOption("15 Menit"),
-                            _buildOption("30 Menit"),
-                            _buildOption("45 Menit"),
-                            SizedBox(height: 40),
-                            ElevatedButton(
-                              onPressed:
-                                  selectedMenit == null
-                                      ? null
-                                      : () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (_) => BottomNavbar(),
-                                          ),
-                                        );
-                                      },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor:
+                              const SizedBox(height: 50),
+                              _buildOption("15 Menit"),
+                              _buildOption("30 Menit"),
+                              _buildOption("45 Menit"),
+                              const SizedBox(height: 40),
+                              ElevatedButton(
+                                onPressed:
                                     selectedMenit == null
-                                        ? Colors.grey
-                                        : Color(0xffFBBE55),
-                                minimumSize: Size(double.infinity, 50),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
+                                        ? null
+                                        : () {
+                                          final menit = int.parse(
+                                            selectedMenit!.split(" ").first,
+                                          );
+                                          context.read<UbahMenitBloc>().add(
+                                            SubmitUbahMenit(menit),
+                                          );
+                                        },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      selectedMenit == null
+                                          ? Colors.grey
+                                          : const Color(0xffFBBE55),
+                                  minimumSize: const Size(double.infinity, 50),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                ),
+                                child: const Text(
+                                  "Simpan",
+                                  style: TextStyle(color: Colors.black),
                                 ),
                               ),
-                              child: Text(
-                                "Simpan",
-                                style: TextStyle(color: Colors.black),
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
 

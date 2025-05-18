@@ -5,6 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:pp_flutter/blocs/logout/logout_bloc.dart';
 import 'package:pp_flutter/blocs/logout/logout_event.dart';
 import 'package:pp_flutter/blocs/logout/logout_state.dart';
+import 'package:pp_flutter/blocs/menitBelajar/ubah_menit_bloc.dart';
+import 'package:pp_flutter/blocs/ubahProfile/ubah_profile_bloc.dart';
 import 'package:pp_flutter/blocs/ulasan/ulasan_bloc.dart';
 import 'package:pp_flutter/blocs/ulasan/ulasan_event.dart';
 import 'package:pp_flutter/blocs/ulasan/ulasan_state.dart';
@@ -437,9 +439,19 @@ class _ProfilePageState extends State<ProfilePage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) => const UbahProfile(),
+                                  builder:
+                                      (_) => BlocProvider<UbahProfileBloc>(
+                                        create:
+                                            (_) => UbahProfileBloc(
+                                              AuthRepository(),
+                                            ),
+                                        child: const UbahProfile(),
+                                      ),
                                 ),
-                              );
+                              ).then((_) {
+                                // setelah kembali, panggil ulang fetchProfile
+                                fetchProfile();
+                              });
                             },
                             child: SvgPicture.asset(
                               'assets/profile/icon-pencil.svg',
@@ -478,7 +490,13 @@ class _ProfilePageState extends State<ProfilePage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) => const UbahMenit(),
+                                  builder:
+                                      (_) => BlocProvider<UbahMenitBloc>(
+                                        create:
+                                            (_) =>
+                                                UbahMenitBloc(AuthRepository()),
+                                        child: const UbahMenit(),
+                                      ),
                                 ),
                               );
                             },

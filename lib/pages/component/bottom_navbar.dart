@@ -6,7 +6,8 @@ import 'package:pp_flutter/pages/profile.dart';
 
 class BottomNavbar extends StatefulWidget {
   final bool showDialogOnHome;
-  const BottomNavbar({super.key, this.showDialogOnHome = false});
+  final int initialIndex;
+  const BottomNavbar({super.key, this.showDialogOnHome = false, this.initialIndex = 0,});
 
   @override
   State<BottomNavbar> createState() => _BottomNavbarState();
@@ -19,6 +20,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
   @override
   void initState() {
     super.initState();
+     _selectedIndex = widget.initialIndex;
     _shouldShowDialog = widget.showDialogOnHome;
   }
 
