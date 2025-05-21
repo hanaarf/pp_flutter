@@ -1,23 +1,31 @@
-// models/user_model.dart
 class UserModel {
-  final String name;
-  final String email;
-  final String password;
-  final String confirmPassword;
+  final int id;
+  final String nama;
+  final String xp;
+  final String img;
+  final String jenjang;
+  final String kelas;
+  final String createdAt;
 
   UserModel({
-    required this.name,
-    required this.email,
-    required this.password,
-    required this.confirmPassword,
+    required this.id,
+    required this.nama,
+    required this.xp,
+    required this.img,
+    required this.jenjang,
+    required this.kelas,
+    required this.createdAt,
   });
 
-  Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'email': email,
-      'password': password,
-      'password_confirmation': confirmPassword,
-    };
+  factory UserModel.fromJson(Map<String, dynamic> json) {
+    return UserModel(
+      id: json['id'],
+      nama: json['nama'],
+      xp: json['xp'].toString(),
+      img: 'assets/avatar/${json['img']}',
+      jenjang: json['jenjang'],
+      kelas: json['kelas'],
+      createdAt: json['created_at'],
+    );
   }
 }

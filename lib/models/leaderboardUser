@@ -1,0 +1,34 @@
+class LeaderboardUser {
+  final int id;
+  final int rank;
+  final String name;
+  final int xp;
+  final String avatar;
+  final String jenjang;
+  final String kelas;
+  final String createdAt;
+
+  LeaderboardUser({
+    required this.id,
+    required this.rank,
+    required this.name,
+    required this.xp,
+    required this.avatar,
+    required this.jenjang,
+    required this.kelas,
+    required this.createdAt,
+  });
+
+  factory LeaderboardUser.fromJson(Map<String, dynamic> json) {
+    return LeaderboardUser(
+      id: json['id'],
+      rank: json['rank'],
+      name: json['name'],
+      xp: json['xp'],
+      avatar: json['avatar'] ?? 'avatar.png',
+      jenjang: json['jenjang'] ?? '-',
+      kelas: json['kelas'] ?? '-',
+      createdAt: json['created_at'] ?? '',
+    );
+  }
+}

@@ -27,7 +27,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
   List<Widget> _buildPages() {
     return [
       HomePage(shouldShowDialog: _shouldShowDialog),
-      const Peringkat(),
+      Peringkat(),
       ProfilePage(),
     ];
   }

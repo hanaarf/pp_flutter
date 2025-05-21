@@ -1,46 +1,69 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pp_flutter/pages/searchUser.dart';
 import 'package:flutter/services.dart';
+import 'package:pp_flutter/models/leaderboardUser';
+import 'package:pp_flutter/models/response/profile_response.dart';
+import 'package:pp_flutter/models/user_model.dart';
+import 'package:pp_flutter/pages/detailUser.dart';
+import 'package:pp_flutter/pages/searchUser.dart';
+import 'package:pp_flutter/repositories/auth_repository.dart';
+import 'package:pp_flutter/repositories/siswa_repositori.dart';
 
-
-class Peringkat extends StatelessWidget {
+class Peringkat extends StatefulWidget {
   const Peringkat({super.key});
 
-  final List<Map<String, dynamic>> leaderboard = const [
-    {
-      'rank': 1,
-      'name': 'Eisa_my',
-      'xp': 7500,
-      'avatar': 'assets/avatar/ava1.png',
-    },
-    {
-      'rank': 2,
-      'name': 'Mareta',
-      'xp': 7000,
-      'avatar': 'assets/avatar/ava2.png',
-    },
-    {'rank': 3, 'name': 'Hana', 'xp': 6500, 'avatar': 'assets/avatar/ava3.png'},
-    {
-      'rank': 4,
-      'name': 'Intan',
-      'xp': 5500,
-      'avatar': 'assets/avatar/ava4.png',
-    },
-    {
-      'rank': 5,
-      'name': 'Maliha',
-      'xp': 5000,
-      'avatar': 'assets/avatar/ava5.png',
-    },
-  ];
+  @override
+  State<Peringkat> createState() => _PeringkatState();
+}
+
+class _PeringkatState extends State<Peringkat> {
+  ProfileResponse? profile;
+  List<LeaderboardUser> leaderboardUsers = [];
+  final AuthRepository _authRepository = AuthRepository();
+  final SiswaRepositori _siswaRepositori = SiswaRepositori();
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    try {
+      final fetchedProfile = await _authRepository.getProfile();
+      final fetchedLeaderboard = await _siswaRepositori.getLeaderboard();
+
+      if (!mounted) return;
+      setState(() {
+        profile = fetchedProfile;
+        leaderboardUsers = fetchedLeaderboard;
+        isLoading = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        isLoading = false;
+      });
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Gagal memuat data: $e')));
+    }
+  }
+
+  String getAvatarPath(String? avatar) {
+    final filename = avatar ?? '';
+    if (filename.isEmpty || filename == 'null') {
+      return 'assets/avatar/avatar.png';
+    }
+    return 'assets/avatar/$filename';
+  }
 
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
     return Scaffold(
-      extendBodyBehindAppBar: false,
       backgroundColor: const Color(0xffF5F5F5),
       body: SafeArea(
         child: Padding(
@@ -48,6 +71,7 @@ class Peringkat extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Search Bar
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16,
@@ -69,7 +93,7 @@ class Peringkat extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => SearchUser(),
+                              builder: (context) => const SearchUser(),
                             ),
                           );
                         },
@@ -90,116 +114,156 @@ class Peringkat extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 40),
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(28),
-                  border: Border.all(color: Color(0xffE0E0E0), width: 1.5),
-                ),
-                child: Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 30,
-                      backgroundImage: AssetImage('assets/avatar/ava5.png'),
+
+              // Profil Login
+              profile == null
+                  ? Container(height: 80)
+                  : Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(28),
+                      border: Border.all(
+                        color: const Color(0xffE0E0E0),
+                        width: 1.5,
+                      ),
                     ),
-                    const SizedBox(width: 12),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Row(
                       children: [
-                        Text(
-                          'Diyana Putri',
-                          style: GoogleFonts.quicksand(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+                        CircleAvatar(
+                          radius: 30,
+                          backgroundImage: AssetImage(
+                            getAvatarPath(profile!.image),
                           ),
                         ),
-                        const SizedBox(height: 4),
-
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 6,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border.all(
-                              color: Color(0xffFAAE2B),
-                              width: 1,
-                            ),
-                            borderRadius: BorderRadius.circular(24),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              SvgPicture.asset('assets/avatar/bi_trophy.svg',width: 15,),
-                              SizedBox(width: 6),
-                              Text(
-                                'Total xp: 100',
-                                style: TextStyle(color: Color(0xffFAAE2B)),
+                        const SizedBox(width: 12),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              profile!.name,
+                              style: GoogleFonts.quicksand(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
                               ),
-                            ],
-                          ),
+                            ),
+                            const SizedBox(height: 4),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 6,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                border: Border.all(
+                                  color: const Color(0xffFAAE2B),
+                                  width: 1,
+                                ),
+                                borderRadius: BorderRadius.circular(24),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/avatar/bi_trophy.svg',
+                                    width: 15,
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    'Total xp: ${profile!.xpTotal}',
+                                    style: const TextStyle(
+                                      color: Color(0xffFAAE2B),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                  ],
-                ),
-              ),
-
+                  ),
               const SizedBox(height: 30),
 
+              // Leaderboard
               Expanded(
-                child: ListView.builder(
-                  itemCount: leaderboard.length,
-                  itemBuilder: (context, index) {
-                    final user = leaderboard[index];
-                    return Container(
-                      margin: const EdgeInsets.only(bottom: 18),
-                      padding: const EdgeInsets.all(15),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(
-                          color: Color(0xffD9D9D9),
-                          width: 1.5,
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          Text(
-                            '${user['rank']}',
-                            style: GoogleFonts.quicksand(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          CircleAvatar(
-                            backgroundImage: AssetImage(user['avatar']),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Text(
-                              user['name'],
-                              style: GoogleFonts.quicksand(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
+                child:
+                    isLoading
+                        ? const SizedBox()
+                        : ListView.builder(
+                          itemCount: leaderboardUsers.length,
+                          itemBuilder: (context, index) {
+                            final user = leaderboardUsers[index];
+                            return GestureDetector(
+                              onTap: () {
+                                final userModel = UserModel(
+                                  id: user.id,
+                                  nama: user.name,
+                                  xp: user.xp.toString(),
+                                  img: getAvatarPath(user.avatar),
+                                  jenjang: user.jenjang,
+                                  kelas: user.kelas,
+                                  createdAt: DateTime.now().toIso8601String(),
+                                );
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder:
+                                        (context) =>
+                                            UserDetailPage(user: userModel),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                margin: const EdgeInsets.only(bottom: 18),
+                                padding: const EdgeInsets.all(15),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(16),
+                                  border: Border.all(
+                                    color: const Color(0xffD9D9D9),
+                                    width: 1.5,
+                                  ),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      '${user.rank}',
+                                      style: GoogleFonts.quicksand(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 16),
+                                    CircleAvatar(
+                                      backgroundImage: AssetImage(
+                                        getAvatarPath(user.avatar),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Text(
+                                        user.name[0].toUpperCase() +
+                                            user.name.substring(1),
+                                        style: GoogleFonts.quicksand(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                    Text(
+                                      '${user.xp} xp',
+                                      style: GoogleFonts.quicksand(
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                          ),
-                          Text(
-                            '${user['xp']} xp',
-                            style: GoogleFonts.quicksand(
-                              fontWeight: FontWeight.w500,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
+                            );
+                          },
+                        ),
               ),
             ],
           ),

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pp_flutter/models/user_model.dart';
 
 class UserDetailPage extends StatelessWidget {
-  const UserDetailPage({super.key});
+  final UserModel user;
+
+  const UserDetailPage({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -48,14 +51,14 @@ class UserDetailPage extends StatelessWidget {
                       children: [
                         CircleAvatar(
                           radius: 30,
-                          backgroundImage: AssetImage('assets/avatar/ava5.png'),
+                          backgroundImage: AssetImage(user.img),
                         ),
                         const SizedBox(width: 12),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Maliha',
+                              user.nama[0].toUpperCase() + user.nama.substring(1),
                               style: GoogleFonts.quicksand(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
@@ -70,7 +73,7 @@ class UserDetailPage extends StatelessWidget {
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 border: Border.all(
-                                  color: Color(0xffFAAE2B),
+                                  color: const Color(0xffFAAE2B),
                                   width: 1.2,
                                 ),
                                 borderRadius: BorderRadius.circular(30),
@@ -82,10 +85,10 @@ class UserDetailPage extends StatelessWidget {
                                     'assets/avatar/bi_trophy.svg',
                                     width: 15,
                                   ),
-                                  SizedBox(width: 6),
+                                  const SizedBox(width: 6),
                                   Text(
-                                    'Total xp: 100',
-                                    style: TextStyle(color: Color(0xffFAAE2B)),
+                                    'Total xp: ${user.xp}',
+                                    style: const TextStyle(color: Color(0xffFAAE2B)),
                                   ),
                                 ],
                               ),
@@ -95,16 +98,36 @@ class UserDetailPage extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 20),
+
                     Row(
                       children: [
-                        Icon(
+                        const Icon(
+                          Icons.school,
+                          size: 18,
+                          color: Colors.grey,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          '${user.jenjang} : ${user.kelas}',
+                          style: GoogleFonts.quicksand(
+                            color: Colors.grey,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 15),
+
+                    Row(
+                      children: [
+                        const Icon(
                           Icons.calendar_today,
                           size: 18,
                           color: Colors.grey,
                         ),
-                        SizedBox(width: 8),
+                        const SizedBox(width: 8),
                         Text(
-                          'Bergabung Mei 2025',
+                          'Bergabung ${_formatTanggal(user.createdAt)}',
                           style: GoogleFonts.quicksand(
                             color: Colors.grey,
                             fontSize: 14,
@@ -115,12 +138,20 @@ class UserDetailPage extends StatelessWidget {
                   ],
                 ),
               ),
-
               const Spacer(flex: 2),
             ],
           ),
         ),
       ),
     );
+  }
+
+  String _formatTanggal(String tanggal) {
+    final DateTime dt = DateTime.parse(tanggal);
+    const bulan = [
+      'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+      'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+    ];
+    return '${bulan[dt.month - 1]} ${dt.year}';
   }
 }
