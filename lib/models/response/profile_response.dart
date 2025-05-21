@@ -5,6 +5,7 @@ class ProfileResponse {
   final String kelas;
   final int belajarMenitPerHari;
   final int xpTotal; 
+   final String image;
 
   ProfileResponse({
     required this.name,
@@ -13,6 +14,7 @@ class ProfileResponse {
     required this.kelas,
     required this.belajarMenitPerHari,
     required this.xpTotal, 
+    required this.image, 
   });
 
   factory ProfileResponse.fromJson(Map<String, dynamic> json) {
@@ -23,6 +25,7 @@ class ProfileResponse {
       kelas: json['kelas'] ?? '',
       belajarMenitPerHari: json['belajar_menit_per_hari'] ?? 0,
       xpTotal: json['xp_total'] ?? 0, 
+      image: json['image'] ?? 'avatar.png',
     );
   }
 }

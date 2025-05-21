@@ -140,4 +140,22 @@ class AuthRepository {
       throw Exception(json['message'] ?? 'Gagal mengubah profil');
     }
   }
+
+  Future<void> updateAvatar(String avatar) async {
+    final token = await _storage.read(key: 'token');
+
+    final response = await http.put(
+      Uri.parse('$baseUrl/siswa/update-avatar'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({'avatar': avatar}),
+    );
+
+    final json = jsonDecode(response.body);
+    if (response.statusCode != 200 || json['success'] != true) {
+      throw Exception(json['message'] ?? 'Gagal mengubah avatar');
+    }
+  }
 }

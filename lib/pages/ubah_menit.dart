@@ -5,7 +5,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:pp_flutter/blocs/menitBelajar/ubah_menit_bloc.dart';
 import 'package:pp_flutter/blocs/menitBelajar/ubah_menit_event.dart';
 import 'package:pp_flutter/blocs/menitBelajar/ubah_menit_state.dart';
+import 'package:pp_flutter/models/response/profile_response.dart';
 import 'package:pp_flutter/pages/component/bottom_navbar.dart';
+import 'package:pp_flutter/repositories/auth_repository.dart';
 
 class UbahMenit extends StatefulWidget {
   const UbahMenit({super.key});
@@ -72,7 +74,8 @@ class _UbahMenitState extends State<UbahMenit> {
     });
   }
 
-  String selectedAvatar = 'assets/avatar/ava1.png';
+  ProfileResponse? profileData;
+  String selectedAvatar = 'assets/avatar/avatar.png';
 
   void _showAvatarPicker() {
     showModalBottomSheet(
@@ -104,11 +107,40 @@ class _UbahMenitState extends State<UbahMenit> {
                 children:
                     avatars.map((path) {
                       return GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                          setState(() {
-                            selectedAvatar = path;
-                          });
+                        onTap: () async {
+                          final avatarName = path.split('/').last;
+
+                          try {
+                            await AuthRepository().updateAvatar(
+                              avatarName,
+                            ); // kirim ke Laravel
+
+                            if (!mounted) return;
+
+                            setState(() {
+                              selectedAvatar = path;
+                            });
+
+                            _showCustomSnackBar(
+                              context,
+                              "Avatar berhasil diperbarui",
+                            );
+
+                            Future.delayed(
+                              const Duration(milliseconds: 300),
+                              () {
+                                if (mounted) Navigator.pop(context);
+                              },
+                            );
+                          } catch (e) {
+                            if (mounted) {
+                              _showCustomSnackBar(
+                                context,
+                                "Gagal update avatar: $e",
+                                isSuccess: false,
+                              );
+                            }
+                          }
                         },
                         child: Container(
                           decoration: BoxDecoration(
@@ -132,6 +164,26 @@ class _UbahMenitState extends State<UbahMenit> {
         );
       },
     );
+  }
+
+  Future<void> fetchProfile() async {
+    try {
+      final authRepo = AuthRepository();
+      final data = await authRepo.getProfile();
+      setState(() {
+        profileData = data;
+        selectedAvatar = 'assets/avatar/${data.image}';
+      });
+    } catch (e) {
+      // opsional: tampilkan error atau biarkan default avatar
+      debugPrint('Gagal ambil profil: $e');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchProfile();
   }
 
   @override

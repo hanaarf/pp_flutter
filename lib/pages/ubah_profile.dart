@@ -28,7 +28,7 @@ class _UbahProfileState extends State<UbahProfile> {
   };
   String? _selectedKelas;
 
-  String selectedAvatar = 'assets/avatar/ava1.png';
+  String selectedAvatar = 'assets/avatar/avatar.png';
 
   void _showAvatarPicker() {
     showModalBottomSheet(
@@ -60,11 +60,33 @@ class _UbahProfileState extends State<UbahProfile> {
                 children:
                     avatars.map((path) {
                       return GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                          setState(() {
-                            selectedAvatar = path;
-                          });
+                        onTap: () async {
+                          final avatarName = path.split('/').last;
+                          try {
+                            await AuthRepository().updateAvatar(
+                              avatarName,
+                            ); // simpan ke database
+
+                            if (!mounted) return;
+                            setState(() {
+                              selectedAvatar = path;
+                            });
+
+                            Future.delayed(
+                              const Duration(milliseconds: 300),
+                              () {
+                                if (mounted) Navigator.pop(context);
+                              },
+                            );
+                          } catch (e) {
+                            if (mounted) {
+                              Navigator.pop(context);
+                              _showSnackBar(
+                                "Gagal update avatar: $e",
+                                isSuccess: false,
+                              );
+                            }
+                          }
                         },
                         child: Container(
                           decoration: BoxDecoration(
@@ -126,9 +148,8 @@ class _UbahProfileState extends State<UbahProfile> {
       setState(() {
         _namaController.text = profile.name;
         _selectedJenjang = profile.jenjang.toUpperCase();
-        _selectedKelas =
-            _selectedKelas = RegExp(r'\d+').firstMatch(profile.kelas)?.group(0);
-        ;
+        _selectedKelas = RegExp(r'\d+').firstMatch(profile.kelas)?.group(0);
+        selectedAvatar = 'assets/avatar/${profile.image ?? 'avatar.png'}'; 
         isLoading = false;
       });
     } catch (e) {
@@ -304,8 +325,7 @@ class _UbahProfileState extends State<UbahProfile> {
                                 onChanged: (String? newValue) {
                                   setState(() {
                                     _selectedJenjang = newValue;
-                                    _selectedKelas =
-                                        null; 
+                                    _selectedKelas = null;
                                   });
                                 },
 

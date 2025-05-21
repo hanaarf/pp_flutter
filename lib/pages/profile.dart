@@ -44,6 +44,7 @@ class _ProfilePageState extends State<ProfilePage> {
       final data = await authRepo.getProfile();
       setState(() {
         profileData = data;
+        selectedAvatar = 'assets/avatar/${data.image}';
         isLoading = false;
       });
     } catch (e) {
@@ -86,11 +87,39 @@ class _ProfilePageState extends State<ProfilePage> {
                 children:
                     avatars.map((path) {
                       return GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                          setState(() {
-                            selectedAvatar = path;
-                          });
+                        onTap: () async {
+                          final avatarName = path.split('/').last;
+
+                          try {
+                            await AuthRepository().updateAvatar(avatarName);
+
+                            if (!mounted) return;
+
+                            setState(() {
+                              selectedAvatar = path;
+                            });
+
+                            _showCustomSnackBar(
+                              context,
+                              "Avatar berhasil diperbarui",
+                            );
+
+                            // Pop bottom sheet setelah UI update
+                            Future.delayed(
+                              const Duration(milliseconds: 300),
+                              () {
+                                if (mounted) Navigator.pop(context);
+                              },
+                            );
+                          } catch (e) {
+                            if (mounted) {
+                              _showCustomSnackBar(
+                                context,
+                                "Gagal update avatar: $e",
+                                isSuccess: false,
+                              );
+                            }
+                          }
                         },
                         child: Container(
                           decoration: BoxDecoration(
@@ -308,78 +337,6 @@ class _ProfilePageState extends State<ProfilePage> {
                           ],
                         ),
                       ),
-                      // BlocListener<LogoutBloc, LogoutState>(
-                      //   listener: (context, state) {
-                      //     if (state is LogoutSuccess) {
-                      //       Navigator.pushAndRemoveUntil(
-                      //         context,
-                      //         MaterialPageRoute(
-                      //           builder: (_) => const SigninPages(),
-                      //         ),
-                      //         (route) => false,
-                      //       );
-                      //     } else if (state is LogoutFailure) {
-                      //       ScaffoldMessenger.of(context).showSnackBar(
-                      //         SnackBar(
-                      //           content: Text("Logout gagal: ${state.message}"),
-                      //         ),
-                      //       );
-                      //     }
-                      //   },
-                      //   child: IconButton(
-                      //     icon: const Icon(
-                      //       Icons.logout,
-                      //       color: Colors.redAccent,
-                      //       size: 28,
-                      //     ),
-                      //     onPressed: () {
-                      //       showDialog(
-                      //         context: context,
-                      //         builder: (BuildContext context) {
-                      //           return AlertDialog(
-                      //             shape: RoundedRectangleBorder(
-                      //               borderRadius: BorderRadius.circular(20),
-                      //             ),
-                      //             title: Text(
-                      //               "Konfirmasi Logout",
-                      //               style: GoogleFonts.quicksand(
-                      //                 fontSize: 20,
-                      //                 fontWeight: FontWeight.bold,
-                      //               ),
-                      //             ),
-                      //             content: Text(
-                      //               "Apakah kamu yakin ingin keluar dari akun?",
-                      //               style: GoogleFonts.quicksand(
-                      //                 fontWeight: FontWeight.w500,
-                      //               ),
-                      //             ),
-                      //             actions: [
-                      //               TextButton(
-                      //                 child: const Text("Batal"),
-                      //                 onPressed:
-                      //                     () => Navigator.of(context).pop(),
-                      //               ),
-                      //               ElevatedButton(
-                      //                 style: ElevatedButton.styleFrom(
-                      //                   backgroundColor: const Color(
-                      //                     0xffFFDDFAA,
-                      //                   ),
-                      //                 ),
-                      //                 onPressed: () {
-                      //                   Navigator.of(context).pop();
-                      //                   context.read<LogoutBloc>().add(
-                      //                     LogoutRequested(),
-                      //                   );
-                      //                 },
-                      //                 child: const Text("Ya"),
-                      //               ),
-                      //             ],
-                      //           );
-                      //         },
-                      //       );
-                      //     },
-                      //   ),
-                      // ),
                       Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
@@ -486,8 +443,8 @@ class _ProfilePageState extends State<ProfilePage> {
                             ),
                           ),
                           GestureDetector(
-                            onTap: () {
-                              Navigator.push(
+                            onTap: () async {
+                              await Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder:
@@ -499,7 +456,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                       ),
                                 ),
                               );
+                              fetchProfile();
                             },
+
                             child: SvgPicture.asset(
                               'assets/profile/icon-pencil.svg',
                             ),
