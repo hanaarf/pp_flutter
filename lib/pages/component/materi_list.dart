@@ -30,14 +30,13 @@ class _MateriListState extends State<MateriList> {
             ? widget.materiData
             : widget.materiData
                 .take(2)
-                .toList(); // hanya 2 pertama jika belum di-expand
+                .toList(); 
 
     return Container(
       margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Judul section + tombol toggle
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -92,37 +91,16 @@ class _MateriListState extends State<MateriList> {
                       child: Row(
                         children: [
                           ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Stack(
-                              children: [
-                                Image.network(
-                                  getYoutubeThumbnail(materi.videoUrl),
-                                  width: 100,
-                                  height: 70,
-                                  fit: BoxFit.cover,
-                                ),
-                                Positioned(
-                                  bottom: 4,
-                                  right: 4,
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 6,
-                                      vertical: 2,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: Colors.black54,
-                                      borderRadius: BorderRadius.circular(4),
-                                    ),
-                                    child: Text(
-                                      '00.00', // atau pakai created_at jika ingin
-                                      style: GoogleFonts.montserrat(
-                                        fontSize: 10,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
+                            borderRadius: BorderRadius.circular(8),
+                            child: Transform.scale(
+                              scale:
+                                  1.3,
+                              child: Image.network(
+                                getYoutubeThumbnail(materi.videoUrl),
+                                width: 100,
+                                height: 70,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
                           const SizedBox(width: 12),
@@ -131,11 +109,9 @@ class _MateriListState extends State<MateriList> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  materi.judul.length > 15
-                                      ? '${materi.judul.substring(0, 15)}...'
-                                      : materi.judul,
+                                 '${materi.judul} : ${materi.subjudul}',
                                   style: GoogleFonts.montserrat(
-                                    fontSize: 14,
+                                    fontSize: 12,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),

@@ -24,7 +24,7 @@ class ProfileResponse {
       jenjang: json['jenjang'] ?? '',
       kelas: json['kelas'] ?? '',
       belajarMenitPerHari: json['belajar_menit_per_hari'] ?? 0,
-      xpTotal: json['xp_total'] ?? 0, 
+      xpTotal: json['xpTotal'] ?? 0, 
       image: json['image'] ?? 'avatar.png',
     );
   }

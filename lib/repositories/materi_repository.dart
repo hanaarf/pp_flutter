@@ -52,6 +52,7 @@ class MateriRepository {
         return MateriModel(
           id: e['id'],
           judul: e['judul'],
+          subjudul: e['subjudul'],
           deskripsi: e['deskripsi'],
           videoUrl: e['youtube_url'],
         );
@@ -75,6 +76,7 @@ class MateriRepository {
         return MateriModel(
           id: e['id'],
           judul: e['judul'],
+          subjudul: e['subjudul'],
           deskripsi: e['deskripsi'],
           videoUrl: e['youtube_url'],
         );

@@ -87,7 +87,7 @@ class _DetailMateriPageState extends State<DetailMateriPage> {
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
                             child: Text(
-                              materi.judul,
+                               '${materi.judul} : ${materi.subjudul}',
                               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                             ),
                           ),

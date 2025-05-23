@@ -27,14 +27,14 @@ class _ProfilePageState extends State<ProfilePage> {
   final TextEditingController _ulasanController = TextEditingController();
   ProfileResponse? profileData;
   bool isLoading = true;
-  String selectedAvatar = 'assets/avatar/ava1.png';
+  String selectedAvatar = 'assets/avatar/avatar.png';
 
   @override
   void initState() {
     super.initState();
     fetchProfile();
     _ulasanController.addListener(() {
-      setState(() {});
+      if (mounted) setState(() {});
     });
   }
 
@@ -42,12 +42,14 @@ class _ProfilePageState extends State<ProfilePage> {
     try {
       final authRepo = AuthRepository();
       final data = await authRepo.getProfile();
+      if (!mounted) return;
       setState(() {
         profileData = data;
-        selectedAvatar = 'assets/avatar/${data.image}';
+        selectedAvatar = 'assets/avatar/${data.image ?? 'avatar.png'}';
         isLoading = false;
       });
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         isLoading = false;
       });
@@ -84,59 +86,41 @@ class _ProfilePageState extends State<ProfilePage> {
                 shrinkWrap: true,
                 mainAxisSpacing: 16,
                 crossAxisSpacing: 16,
-                children:
-                    avatars.map((path) {
-                      return GestureDetector(
-                        onTap: () async {
-                          final avatarName = path.split('/').last;
-
-                          try {
-                            await AuthRepository().updateAvatar(avatarName);
-
-                            if (!mounted) return;
-
-                            setState(() {
-                              selectedAvatar = path;
-                            });
-
-                            _showCustomSnackBar(
-                              context,
-                              "Avatar berhasil diperbarui",
-                            );
-
-                            // Pop bottom sheet setelah UI update
-                            Future.delayed(
-                              const Duration(milliseconds: 300),
-                              () {
-                                if (mounted) Navigator.pop(context);
-                              },
-                            );
-                          } catch (e) {
-                            if (mounted) {
-                              _showCustomSnackBar(
-                                context,
-                                "Gagal update avatar: $e",
-                                isSuccess: false,
-                              );
-                            }
-                          }
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color:
-                                  selectedAvatar == path
-                                      ? Colors.deepPurple
-                                      : Colors.transparent,
-                              width: 2,
-                            ),
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          padding: const EdgeInsets.all(4),
-                          child: Image.asset(path),
+                children: avatars.map((path) {
+                  return GestureDetector(
+                    onTap: () async {
+                      final avatarName = path.split('/').last;
+                      try {
+                        await AuthRepository().updateAvatar(avatarName);
+                        if (!mounted) return;
+                        setState(() {
+                          selectedAvatar = path;
+                        });
+                        _showCustomSnackBar(context, "Avatar berhasil diperbarui");
+                        if (mounted) Navigator.pop(context);
+                      } catch (e) {
+                        if (mounted) {
+                          _showCustomSnackBar(
+                            context,
+                            "Gagal update avatar: $e",
+                            isSuccess: false,
+                          );
+                        }
+                      }
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: selectedAvatar == path ? Colors.deepPurple : Colors.transparent,
+                          width: 2,
                         ),
-                      );
-                    }).toList(),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      padding: const EdgeInsets.all(4),
+                      child: Image.asset(path),
+                    ),
+                  );
+                }).toList(),
               ),
             ],
           ),
@@ -150,48 +134,37 @@ class _ProfilePageState extends State<ProfilePage> {
     String message, {
     bool isSuccess = true,
   }) {
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Container(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color:
-                      isSuccess
-                          ? Colors.greenAccent
-                          : Colors.red.withOpacity(0.2),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  isSuccess ? Icons.check_circle : Icons.error,
-                  color: isSuccess ? Colors.green : Colors.red,
-                ),
+        content: Row(
+          children: [
+            Icon(
+              isSuccess ? Icons.check_circle : Icons.error,
+              color: isSuccess ? Colors.green : Colors.red,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                message,
+                style: const TextStyle(color: Colors.white),
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  message,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
-        backgroundColor: Color(0xFFFAAE2B),
+        backgroundColor: const Color(0xFFFAAE2B),
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         margin: const EdgeInsets.all(16),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         duration: const Duration(seconds: 2),
-        elevation: 4,
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _ulasanController.dispose();
+    super.dispose();
   }
 
   @override

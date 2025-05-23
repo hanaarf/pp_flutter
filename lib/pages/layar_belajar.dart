@@ -52,7 +52,7 @@ class _LayarBelajarState extends State<LayarBelajar> {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 15),
                   Expanded(
                     child: ListView.builder(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -97,33 +97,13 @@ class _LayarBelajarState extends State<LayarBelajar> {
                                   children: [
                                     ClipRRect(
                                       borderRadius: BorderRadius.circular(8),
-                                      child: Image.network(
-                                        getYoutubeThumbnail(item.youtubeUrl),
-                                        width: 110,
-                                        height: 80,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                    Positioned(
-                                      bottom: 4,
-                                      right: 4,
-                                      child: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 6,
-                                          vertical: 2,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: Colors.black87,
-                                          borderRadius: BorderRadius.circular(
-                                            4,
-                                          ),
-                                        ),
-                                        child: Text(
-                                          item.createdAt.split(" ")[0],
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 10,
-                                          ),
+                                      child: Transform.scale(
+                                        scale: 1.3,
+                                        child: Image.network(
+                                          getYoutubeThumbnail(item.youtubeUrl),
+                                          width: 100,
+                                          height: 75,
+                                          fit: BoxFit.cover,
                                         ),
                                       ),
                                     ),
@@ -136,14 +116,13 @@ class _LayarBelajarState extends State<LayarBelajar> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        item.judul.length > 15
-                                            ? '${item.judul.substring(0, 15)}...'
-                                            : item.judul,
+                                        '${item.judul} : ${item.subjudul}',
                                         style: GoogleFonts.montserrat(
                                           fontWeight: FontWeight.bold,
-                                          fontSize: 16,
+                                          fontSize: 12,
                                         ),
                                       ),
+
                                       const SizedBox(height: 4),
                                       Text(
                                         item.deskripsi.length > 40

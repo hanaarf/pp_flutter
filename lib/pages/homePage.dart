@@ -1,7 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pp_flutter/blocs/latMateri/latMat_bloc.dart';
+import 'package:pp_flutter/blocs/latMateri/latMat_event.dart';
 import 'package:pp_flutter/models/materi_model.dart';
 import 'package:pp_flutter/pages/component/materi_list.dart';
 import 'package:pp_flutter/pages/latihan_materi.dart';
@@ -11,6 +14,7 @@ import 'package:pp_flutter/repositories/auth_repository.dart';
 import 'dart:async';
 
 import 'package:pp_flutter/repositories/materi_repository.dart';
+import 'package:pp_flutter/repositories/siswa_repositori.dart';
 
 class HomePage extends StatefulWidget {
   final bool shouldShowDialog;
@@ -154,7 +158,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
-      
+
                 Positioned(
                   top: 110,
                   left: 20,
@@ -274,10 +278,7 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(height: 60),
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 20),
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 10,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               decoration: BoxDecoration(
                 color: Colors.white,
                 border: Border.all(color: const Color(0xff9E9E9E)),
@@ -314,7 +315,7 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-      
+
             Container(
               margin: EdgeInsets.only(top: 20),
               padding: EdgeInsets.symmetric(horizontal: 15, vertical: 12),
@@ -341,9 +342,7 @@ class _HomePageState extends State<HomePage> {
                                 horizontal: 18,
                               ),
                               decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: Colors.grey.shade300,
-                                ),
+                                border: Border.all(color: Colors.grey.shade300),
                                 borderRadius: BorderRadius.circular(15),
                               ),
                               child: GestureDetector(
@@ -383,9 +382,7 @@ class _HomePageState extends State<HomePage> {
                                 horizontal: 18,
                               ),
                               decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: Colors.grey.shade300,
-                                ),
+                                border: Border.all(color: Colors.grey.shade300),
                                 borderRadius: BorderRadius.circular(15),
                               ),
                               child: GestureDetector(
@@ -394,10 +391,17 @@ class _HomePageState extends State<HomePage> {
                                     context,
                                     MaterialPageRoute(
                                       builder:
-                                          (context) => LatihanMateriPage(),
+                                          (context) => BlocProvider(
+                                            create:
+                                                (_) => LatihanMateriBloc(
+                                                  SiswaRepositori(),
+                                                )..add(FetchLatihanMateri()),
+                                            child: LatihanMateriPage(),
+                                          ),
                                     ),
                                   );
                                 },
+
                                 child: SvgPicture.asset(
                                   'assets/home/latihan.svg',
                                   width: 40,
@@ -421,7 +425,7 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-      
+
             Container(
               color: Colors.white,
               margin: EdgeInsets.only(top: 20),
