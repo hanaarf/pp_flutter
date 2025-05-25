@@ -107,7 +107,8 @@ class _SearchMateriState extends State<SearchMateri> {
               const SizedBox(height: 20),
               Expanded(
                 child: SingleChildScrollView(
-                  keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                  keyboardDismissBehavior:
+                      ScrollViewKeyboardDismissBehavior.onDrag,
                   padding: EdgeInsets.only(
                     bottom: MediaQuery.of(context).viewInsets.bottom + 20,
                   ),
@@ -138,98 +139,88 @@ class _SearchMateriState extends State<SearchMateri> {
                       ] else ...[
                         const SizedBox(height: 10),
                         Column(
-                          children: _hasilPencarian.map((materi) {
-                            return GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => BlocProvider(
-                                      create: (_) => MateriDetailBloc(
-                                        repository: MateriRepository(),
+                          children:
+                              _hasilPencarian.map((materi) {
+                                return GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder:
+                                            (_) => BlocProvider(
+                                              create:
+                                                  (_) => MateriDetailBloc(
+                                                    repository:
+                                                        MateriRepository(),
+                                                  ),
+                                              child: DetailMateriPage(
+                                                materiId: materi.id,
+                                              ),
+                                            ),
                                       ),
-                                      child: DetailMateriPage(materiId: materi.id),
+                                    );
+                                  },
+                                  child: Container(
+                                    margin: const EdgeInsets.only(bottom: 10),
+                                    padding: const EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(color: Colors.black12),
+                                      borderRadius: BorderRadius.circular(20),
+                                      color: Colors.white,
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
+                                          child: Stack(
+                                            children: [
+                                              Image.network(
+                                                getYoutubeThumbnail(
+                                                  materi.videoUrl,
+                                                ),
+                                                width: 100,
+                                                height: 70,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        const SizedBox(width: 12),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                materi.judul.length > 15
+                                                    ? '${materi.judul.substring(0, 15)}...'
+                                                    : materi.judul,
+                                                style: GoogleFonts.montserrat(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 4),
+                                              Text(
+                                                materi.deskripsi.length > 40
+                                                    ? '${materi.deskripsi.substring(0, 40)}...'
+                                                    : materi.deskripsi,
+                                                style: GoogleFonts.montserrat(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Colors.black87,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 );
-                              },
-                              child: Container(
-                                margin: const EdgeInsets.only(bottom: 10),
-                                padding: const EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.black12),
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: Colors.white,
-                                ),
-                                child: Row(
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(10),
-                                      child: Stack(
-                                        children: [
-                                          Image.network(
-                                            getYoutubeThumbnail(materi.videoUrl),
-                                            width: 100,
-                                            height: 70,
-                                            fit: BoxFit.cover,
-                                          ),
-                                          Positioned(
-                                            bottom: 4,
-                                            right: 4,
-                                            child: Container(
-                                              padding: const EdgeInsets.symmetric(
-                                                horizontal: 6,
-                                                vertical: 2,
-                                              ),
-                                              decoration: BoxDecoration(
-                                                color: Colors.black54,
-                                                borderRadius: BorderRadius.circular(4),
-                                              ),
-                                              child: Text(
-                                                '00.00',
-                                                style: GoogleFonts.montserrat(
-                                                  fontSize: 10,
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    const SizedBox(width: 12),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            materi.judul.length > 15
-                                                ? '${materi.judul.substring(0, 15)}...'
-                                                : materi.judul,
-                                            style: GoogleFonts.montserrat(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            materi.deskripsi.length > 40
-                                                ? '${materi.deskripsi.substring(0, 40)}...'
-                                                : materi.deskripsi,
-                                            style: GoogleFonts.montserrat(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w500,
-                                              color: Colors.black87,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          }).toList(),
+                              }).toList(),
                         ),
                       ],
                     ],

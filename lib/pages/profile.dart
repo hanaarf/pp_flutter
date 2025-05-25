@@ -190,86 +190,86 @@ class _ProfilePageState extends State<ProfilePage> {
                     fit: BoxFit.cover,
                   ),
                 ),
-                Positioned(
-                  top: 40,
-                  right: 20,
-                  child: BlocListener<LogoutBloc, LogoutState>(
-                    listener: (context, state) {
-                      if (state is LogoutSuccess) {
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const SigninPages(),
-                          ),
-                          (route) => false,
-                        );
-                      } else if (state is LogoutFailure) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text("Logout gagal: ${state.message}"),
-                          ),
-                        );
-                      }
-                    },
-                    child: GestureDetector(
-                      onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              title: Text(
-                                "Konfirmasi Logout",
-                                style: GoogleFonts.quicksand(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              content: Text(
-                                "Apakah kamu yakin ingin keluar dari akun?",
-                                style: GoogleFonts.quicksand(
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              actions: [
-                                TextButton(
-                                  child: const Text("Batal"),
-                                  onPressed: () => Navigator.of(context).pop(),
-                                ),
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xffFFDDFAA),
-                                  ),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                    context.read<LogoutBloc>().add(
-                                      LogoutRequested(),
-                                    );
-                                  },
-                                  child: const Text("Ya"),
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.logout,
-                          color: Colors.black87,
-                          size: 24,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                // Positioned(
+                //   top: 40,
+                //   right: 20,
+                //   child: BlocListener<LogoutBloc, LogoutState>(
+                //     listener: (context, state) {
+                //       if (state is LogoutSuccess) {
+                //         Navigator.pushAndRemoveUntil(
+                //           context,
+                //           MaterialPageRoute(
+                //             builder: (_) => const SigninPages(),
+                //           ),
+                //           (route) => false,
+                //         );
+                //       } else if (state is LogoutFailure) {
+                //         ScaffoldMessenger.of(context).showSnackBar(
+                //           SnackBar(
+                //             content: Text("Logout gagal: ${state.message}"),
+                //           ),
+                //         );
+                //       }
+                //     },
+                //     child: GestureDetector(
+                //       onTap: () {
+                //         showDialog(
+                //           context: context,
+                //           builder: (BuildContext context) {
+                //             return AlertDialog(
+                //               shape: RoundedRectangleBorder(
+                //                 borderRadius: BorderRadius.circular(20),
+                //               ),
+                //               title: Text(
+                //                 "Konfirmasi Logout",
+                //                 style: GoogleFonts.quicksand(
+                //                   fontSize: 20,
+                //                   fontWeight: FontWeight.bold,
+                //                 ),
+                //               ),
+                //               content: Text(
+                //                 "Apakah kamu yakin ingin keluar dari akun?",
+                //                 style: GoogleFonts.quicksand(
+                //                   fontWeight: FontWeight.w500,
+                //                 ),
+                //               ),
+                //               actions: [
+                //                 TextButton(
+                //                   child: const Text("Batal"),
+                //                   onPressed: () => Navigator.of(context).pop(),
+                //                 ),
+                //                 ElevatedButton(
+                //                   style: ElevatedButton.styleFrom(
+                //                     backgroundColor: const Color(0xffFFDDFAA),
+                //                   ),
+                //                   onPressed: () {
+                //                     Navigator.of(context).pop();
+                //                     context.read<LogoutBloc>().add(
+                //                       LogoutRequested(),
+                //                     );
+                //                   },
+                //                   child: const Text("Ya"),
+                //                 ),
+                //               ],
+                //             );
+                //           },
+                //         );
+                //       },
+                //       child: Container(
+                //         padding: const EdgeInsets.all(8),
+                //         decoration: BoxDecoration(
+                //           color: Colors.white.withOpacity(0.2),
+                //           shape: BoxShape.circle,
+                //         ),
+                //         child: const Icon(
+                //           Icons.logout,
+                //           color: Colors.black87,
+                //           size: 24,
+                //         ),
+                //       ),
+                //     ),
+                //   ),
+                // ),
               ],
             ),
 
@@ -524,6 +524,93 @@ class _ProfilePageState extends State<ProfilePage> {
                                 ),
                               ),
                             ],
+                          ),
+                        ),
+                      ),
+                      BlocListener<LogoutBloc, LogoutState>(
+                        listener: (context, state) {
+                          if (state is LogoutSuccess) {
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const SigninPages(),
+                              ),
+                              (route) => false,
+                            );
+                          } else if (state is LogoutFailure) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text("Logout gagal: ${state.message}"),
+                              ),
+                            );
+                          }
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 24.0),
+                          child: SizedBox(
+                            width: double.infinity,
+                            height: 40, 
+                            child: ElevatedButton.icon(
+                              icon: const Icon(Icons.logout, color: Colors.black87, size: 16),
+                              label: Text(
+                                "Logout",
+                                style: GoogleFonts.montserrat(
+                                  color: Colors.black87,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xffFBBE55), 
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                elevation: 0,
+                              ),
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      title: Text(
+                                        "Konfirmasi Logout",
+                                        style: GoogleFonts.quicksand(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      content: Text(
+                                        "Apakah kamu yakin ingin keluar dari akun?",
+                                        style: GoogleFonts.quicksand(
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          child: const Text("Batal"),
+                                          onPressed: () => Navigator.of(context).pop(),
+                                        ),
+                                        ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: const Color(0xffFBBE55),
+                                          ),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                            context.read<LogoutBloc>().add(
+                                              LogoutRequested(),
+                                            );
+                                          },
+                                          child: const Text("Ya"),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                            ),
                           ),
                         ),
                       ),

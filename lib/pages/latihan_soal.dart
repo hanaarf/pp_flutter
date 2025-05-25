@@ -19,12 +19,13 @@ class QuizPage extends StatefulWidget {
 
 class _QuizPageState extends State<QuizPage> {
   int _currentIndex = 0;
-  String? _selectedOptionKey; // A, B, C, D
+  String? _selectedOptionKey; // A, B, C
   bool _isAnswerChecked = false;
 
   @override
   void initState() {
     super.initState();
+    _currentIndex = 0; // Reset index setiap buka halaman
     context.read<LatihanSoalBloc>().add(FetchLatihanSoal(widget.materiId));
   }
 
@@ -38,18 +39,22 @@ class _QuizPageState extends State<QuizPage> {
             if (state is LatihanSoalLoading) {
               return const Center(child: CircularProgressIndicator());
             } else if (state is LatihanSoalLoaded) {
-              // Jika soal dari database kosong
-              if (state.soal.isEmpty) {
+              final soal = state.soal.where((s) => s.sudahDijawab != true).toList();
+              // Jika soal kosong/null, tampilkan pesan
+              if (soal.isEmpty) {
                 return Scaffold(
                   appBar: AppBar(
-                    backgroundColor: Colors.transparent,
+                    backgroundColor: Colors.white,
                     elevation: 0,
-                    leading: BackButton(color: Colors.black54),
+                    leading: IconButton(
+                      icon: Icon(Icons.arrow_back, color: Colors.black),
+                      onPressed: () => Navigator.pop(context),
+                    ),
                     title: Text(
-                      "Latihan",
+                      "Latihan Soal",
                       style: GoogleFonts.quicksand(
+                        color: Colors.black,
                         fontWeight: FontWeight.w600,
-                        color: Colors.black54,
                       ),
                     ),
                     centerTitle: true,
@@ -57,7 +62,7 @@ class _QuizPageState extends State<QuizPage> {
                   backgroundColor: const Color(0xffFAFAFA),
                   body: Center(
                     child: Text(
-                      "Latihan belum tersedia",
+                      'Latihan belum tersedia',
                       style: GoogleFonts.quicksand(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -67,12 +72,8 @@ class _QuizPageState extends State<QuizPage> {
                   ),
                 );
               }
-
-              // Filter soal yang belum dikerjakan
-              final soal = state.soal.where((s) => s.sudahDijawab != true).toList();
-
-              if (soal.isEmpty) {
-                // Semua soal sudah dikerjakan
+              // Jika index melebihi jumlah soal, reset ke 0 lalu cek lagi
+              if (_currentIndex >= soal.length) {
                 Future.microtask(() {
                   Navigator.pushReplacement(
                     context,
@@ -185,14 +186,13 @@ class _QuizPageState extends State<QuizPage> {
                         }
 
                         return GestureDetector(
-                          onTap:
-                              _isAnswerChecked
-                                  ? null
-                                  : () {
-                                    setState(() {
-                                      _selectedOptionKey = key;
-                                    });
-                                  },
+                          onTap: _isAnswerChecked
+                              ? null
+                              : () {
+                                  setState(() {
+                                    _selectedOptionKey = key;
+                                  });
+                                },
                           child: Container(
                             margin: const EdgeInsets.only(bottom: 16),
                             padding: const EdgeInsets.symmetric(
@@ -200,10 +200,9 @@ class _QuizPageState extends State<QuizPage> {
                               horizontal: 20,
                             ),
                             decoration: BoxDecoration(
-                              color:
-                                  isSelected
-                                      ? const Color(0xffFBBE55)
-                                      : const Color(0xffF8FDFC),
+                              color: isSelected
+                                  ? const Color(0xffFBBE55)
+                                  : const Color(0xffF8FDFC),
                               border: Border.all(color: borderColor, width: 2),
                               borderRadius: BorderRadius.circular(20),
                             ),
@@ -219,122 +218,109 @@ class _QuizPageState extends State<QuizPage> {
                         );
                       }).toList(),
 
-                      SizedBox(height: 24),
+                      const SizedBox(height: 24),
 
                       // Tombol Periksa
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed:
-                              _selectedOptionKey == null
-                                  ? null
-                                  : () async {
-                                    setState(() {
-                                      _isAnswerChecked = true;
-                                    });
+                          onPressed: _selectedOptionKey == null
+                              ? null
+                              : () async {
+                                  setState(() {
+                                    _isAnswerChecked = true;
+                                  });
 
-                                    final isCorrect = await SiswaRepositori()
-                                        .kirimJawaban(
-                                          latihanVideoId: current.id,
-                                          jawabanUser: _selectedOptionKey!,
-                                        );
+                                  final isCorrect = await SiswaRepositori()
+                                      .kirimJawaban(
+                                    latihanVideoId: current.id,
+                                    jawabanUser: _selectedOptionKey!,
+                                  );
 
-                                    if (isCorrect) {
-                                      showDialog(
-                                        context: context,
-                                        barrierDismissible:
-                                            false, // biar gak bisa ditutup manual
-                                        builder:
-                                            (_) => Dialog(
-                                              backgroundColor:
-                                                  Colors.transparent,
-                                              child: Stack(
-                                                alignment: Alignment.topCenter,
+                                  if (isCorrect) {
+                                    showDialog(
+                                      context: context,
+                                      barrierDismissible: false,
+                                      builder: (_) => Dialog(
+                                        backgroundColor: Colors.transparent,
+                                        child: Stack(
+                                          alignment: Alignment.topCenter,
+                                          children: [
+                                            Container(
+                                              margin: const EdgeInsets.only(
+                                                top: 60,
+                                              ),
+                                              padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                24,
+                                                80,
+                                                24,
+                                                24,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius:
+                                                    BorderRadius.circular(24),
+                                                border: Border.all(
+                                                  color: Colors.black26,
+                                                ),
+                                              ),
+                                              child: Column(
+                                                mainAxisSize: MainAxisSize.min,
                                                 children: [
-                                                  Container(
-                                                    margin:
-                                                        const EdgeInsets.only(
-                                                          top: 60,
-                                                        ),
-                                                    padding:
-                                                        const EdgeInsets.fromLTRB(
-                                                          24,
-                                                          80,
-                                                          24,
-                                                          24,
-                                                        ),
-                                                    decoration: BoxDecoration(
-                                                      color: Colors.white,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            24,
-                                                          ),
-                                                      border: Border.all(
-                                                        color: Colors.black26,
-                                                      ),
-                                                    ),
-                                                    child: Column(
-                                                      mainAxisSize:
-                                                          MainAxisSize.min,
-                                                      children: [
-                                                        Text(
-                                                          "Jawaban Kamu Benar!",
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style:
-                                                              GoogleFonts.quicksand(
-                                                                fontSize: 18,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                color:
-                                                                    Colors
-                                                                        .black,
-                                                              ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  Positioned(
-                                                    top: 0,
-                                                    child: SvgPicture.asset(
-                                                      'assets/star.svg',
-                                                      width: 120,
-                                                      height: 120,
+                                                  Text(
+                                                    "Jawaban Kamu Benar!",
+                                                    textAlign: TextAlign.center,
+                                                    style:
+                                                        GoogleFonts.quicksand(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.black,
                                                     ),
                                                   ),
                                                 ],
                                               ),
                                             ),
-                                      );
+                                            Positioned(
+                                              top: 0,
+                                              child: SvgPicture.asset(
+                                                'assets/star.svg',
+                                                width: 120,
+                                                height: 120,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
 
-                                      await Future.delayed(
-                                        const Duration(seconds: 1),
-                                      );
-                                      if (mounted) {
-                                        Navigator.pop(context);
-                                        setState(() {
-                                          _selectedOptionKey = null;
-                                          _isAnswerChecked = false;
-                                          _currentIndex++;
-                                        });
-                                      }
-                                    } else {
-                                      await Future.delayed(
-                                        const Duration(seconds: 1),
-                                      );
+                                    await Future.delayed(
+                                      const Duration(seconds: 1),
+                                    );
+                                    if (mounted) {
+                                      Navigator.pop(context);
                                       setState(() {
                                         _selectedOptionKey = null;
                                         _isAnswerChecked = false;
                                         _currentIndex++;
                                       });
                                     }
-                                  },
+                                  } else {
+                                    await Future.delayed(
+                                      const Duration(seconds: 1),
+                                    );
+                                    setState(() {
+                                      _selectedOptionKey = null;
+                                      _isAnswerChecked = false;
+                                      _currentIndex++;
+                                    });
+                                  }
+                                },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                _selectedOptionKey == null
-                                    ? Colors.grey
-                                    : const Color(0xffFBBE55),
+                            backgroundColor: _selectedOptionKey == null
+                                ? Colors.grey
+                                : const Color(0xffFBBE55),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(40),
                             ),
@@ -354,7 +340,7 @@ class _QuizPageState extends State<QuizPage> {
                 ),
               );
             } else if (state is LatihanSoalError) {
-              return Center(child: Text("Error: ${state.message}"));
+              return Center(child: Text('Terjadi kesalahan: ${state.message}'));
             }
             return const SizedBox();
           },

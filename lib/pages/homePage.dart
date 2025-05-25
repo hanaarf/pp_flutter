@@ -17,8 +17,7 @@ import 'package:pp_flutter/repositories/materi_repository.dart';
 import 'package:pp_flutter/repositories/siswa_repositori.dart';
 
 class HomePage extends StatefulWidget {
-  final bool shouldShowDialog;
-  const HomePage({Key? key, required this.shouldShowDialog}) : super(key: key);
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -35,74 +34,6 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     fetchUserProfile();
     fetchRekomendasiMateri();
-    if (widget.shouldShowDialog) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        showDialog(
-          context: context,
-          builder:
-              (_) => Dialog(
-                backgroundColor: Colors.transparent,
-                child: Stack(
-                  alignment: Alignment.topCenter,
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.only(top: 60),
-                      padding: const EdgeInsets.only(
-                        top: 80,
-                        bottom: 24,
-                        left: 24,
-                        right: 24,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(24),
-                        border: Border.all(color: Colors.black26),
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            "Selamat Datang!",
-                            textAlign: TextAlign.center,
-                            style: GoogleFonts.quicksand(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                          ),
-                          SizedBox(height: 4),
-                          Text(
-                            "Yuk, mulai petualangan serunya! ",
-                            textAlign: TextAlign.center,
-                            style: GoogleFonts.quicksand(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                              color: Color(0xff404040),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Positioned(
-                      top: 0,
-                      child: SizedBox(
-                        width: 130,
-                        height: 130,
-                        child: Center(
-                          child: SvgPicture.asset(
-                            'assets/lamp.svg',
-                            width: 120,
-                            height: 120,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-        );
-      });
-    }
   }
 
   Future<void> fetchUserProfile() async {

@@ -54,46 +54,51 @@ class UserDetailPage extends StatelessWidget {
                           backgroundImage: AssetImage(user.img),
                         ),
                         const SizedBox(width: 12),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              user.nama[0].toUpperCase() + user.nama.substring(1),
-                              style: GoogleFonts.quicksand(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 6),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 6,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                border: Border.all(
-                                  color: const Color(0xffFAAE2B),
-                                  width: 1.2,
+                        Flexible( // Ganti Column jadi Flexible agar Text tidak overflow
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                user.nama[0].toUpperCase() + user.nama.substring(1),
+                                style: GoogleFonts.quicksand(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
                                 ),
-                                borderRadius: BorderRadius.circular(30),
+                                maxLines: 2, // Biar bisa pindah ke bawah jika panjang
+                                overflow: TextOverflow.ellipsis,
+                                softWrap: true,
                               ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  SvgPicture.asset(
-                                    'assets/avatar/bi_trophy.svg',
-                                    width: 15,
+                              const SizedBox(height: 6),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 6,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border: Border.all(
+                                    color: const Color(0xffFAAE2B),
+                                    width: 1.2,
                                   ),
-                                  const SizedBox(width: 6),
-                                  Text(
-                                    'Total xp: ${user.xp}',
-                                    style: const TextStyle(color: Color(0xffFAAE2B)),
-                                  ),
-                                ],
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    SvgPicture.asset(
+                                      'assets/avatar/bi_trophy.svg',
+                                      width: 15,
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      'Total xp: ${user.xp}',
+                                      style: const TextStyle(color: Color(0xffFAAE2B)),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ],
                     ),

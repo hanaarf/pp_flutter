@@ -6,8 +6,6 @@ import 'package:pp_flutter/blocs/regist/regist_bloc.dart';
 import 'package:pp_flutter/blocs/login/login_bloc.dart';
 import 'package:pp_flutter/blocs/logout/logout_bloc.dart';
 import 'package:pp_flutter/blocs/ulasan/ulasan_bloc.dart';
-import 'package:pp_flutter/pages/layar_belajar.dart';
-import 'package:pp_flutter/pages/signup.dart';
 import 'package:pp_flutter/pages/splash_screen.dart';
 import 'package:pp_flutter/repositories/auth_repository.dart';
 import 'package:pp_flutter/repositories/materi_repository.dart';

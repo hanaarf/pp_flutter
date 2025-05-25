@@ -7,6 +7,7 @@ import 'package:pp_flutter/blocs/latMateri/latMat_event.dart';
 import 'package:pp_flutter/blocs/latMateri/latMat_state.dart';
 import 'package:pp_flutter/blocs/quiz/latSoal_bloc.dart';
 import 'package:pp_flutter/blocs/quiz/latSoal_event.dart';
+import 'package:pp_flutter/pages/component/bottom_navbar.dart';
 import 'package:pp_flutter/pages/latihan_soal.dart';
 import 'package:pp_flutter/repositories/siswa_repositori.dart';
 
@@ -21,19 +22,27 @@ class LatihanMateriPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xffFAFAFA),
+
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
+        backgroundColor: Color(0xffFAFAFA),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const BottomNavbar(initialIndex: 0),
+              ),
+              (route) => false,
+            );
+          },
         ),
+        elevation: 0,
         title: Text(
-          'Latihan Materi',
+          "Latihan Materi",
           style: GoogleFonts.quicksand(
             color: Colors.black,
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
+            fontWeight: FontWeight.w600,
           ),
         ),
         centerTitle: true,
@@ -44,6 +53,10 @@ class LatihanMateriPage extends StatelessWidget {
             return Center(child: CircularProgressIndicator());
           } else if (state is LatihanMateriLoaded) {
             final materi = state.materi;
+            // Cari item pertama yang belum selesai
+            final notDoneList = materi.where((item) => item.statusLatihan != 'selesai');
+            final firstNotDone = notDoneList.isNotEmpty ? notDoneList.first : null;
+
             return ListView(
               padding: EdgeInsets.symmetric(horizontal: 22, vertical: 10),
               children: [
@@ -77,7 +90,26 @@ class LatihanMateriPage extends StatelessWidget {
                             ),
                             SizedBox(height: 10),
                             ElevatedButton(
-                              onPressed: () {},
+                              onPressed: firstNotDone == null
+                                  ? () {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(content: Text('Semua latihan sudah dikerjakan!')),
+                                      );
+                                    }
+                                  : () async {
+                                      await Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => BlocProvider(
+                                            create: (_) => LatihanSoalBloc(SiswaRepositori())
+                                              ..add(FetchLatihanSoal(firstNotDone.id)),
+                                            child: QuizPage(materiId: firstNotDone.id),
+                                          ),
+                                        ),
+                                      );
+                                      // Setelah kembali dari QuizPage, refresh data
+                                      context.read<LatihanMateriBloc>().add(FetchLatihanMateri());
+                                    },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.white,
                                 shape: RoundedRectangleBorder(
@@ -146,8 +178,7 @@ class LatihanMateriPage extends StatelessWidget {
                           ClipRRect(
                             borderRadius: BorderRadius.circular(8),
                             child: Transform.scale(
-                              scale:
-                                  1.3,
+                              scale: 1.3,
                               child: Image.network(
                                 getYoutubeThumbnail(item.youtubeUrl),
                                 width: 110,
@@ -193,14 +224,9 @@ class LatihanMateriPage extends StatelessWidget {
                                               context,
                                               MaterialPageRoute(
                                                 builder: (context) => BlocProvider(
-                                                  create: (_) => LatihanSoalBloc(
-                                                    SiswaRepositori(),
-                                                  )..add(
-                                                    FetchLatihanSoal(item.id),
-                                                  ),
-                                                  child: QuizPage(
-                                                    materiId: item.id,
-                                                  ),
+                                                  create: (_) => LatihanSoalBloc(SiswaRepositori())
+                                                    ..add(FetchLatihanSoal(item.id)),
+                                                  child: QuizPage(materiId: item.id),
                                                 ),
                                               ),
                                             );
@@ -226,8 +252,8 @@ class LatihanMateriPage extends StatelessWidget {
                                       item.statusLatihan == 'selesai'
                                           ? 'sudah dikerjakan'
                                           : item.statusLatihan == 'lanjut'
-                                              ? 'Lanjut Latihan'
-                                              : 'Mulai Latihan',
+                                          ? 'Lanjut Latihan'
+                                          : 'Mulai Latihan',
                                       style: GoogleFonts.montserrat(
                                         color: Colors.black,
                                         fontSize: 9,

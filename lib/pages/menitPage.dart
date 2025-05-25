@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:pp_flutter/models/request/profile_request.dart';
 import 'package:pp_flutter/pages/component/bottom_navbar.dart';
 import 'package:pp_flutter/repositories/auth_repository.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class MenitPage extends StatefulWidget {
   final int jenjangId;
@@ -26,24 +27,93 @@ class _MenitPageState extends State<MenitPage> {
   Future<void> _simpanData() async {
     try {
       final authRepo = AuthRepository();
-     await authRepo.saveProfileData(
-  ProfileRequest(
-    jenjangId: widget.jenjangId,
-    kelasId: widget.kelasId,
-    menitPerHari: int.parse(selectedMenit!.split(" ")[0]),
-  ),
-);
-
-
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) => BottomNavbar(showDialogOnHome: true),
+      await authRepo.saveProfileData(
+        ProfileRequest(
+          jenjangId: widget.jenjangId,
+          kelasId: widget.kelasId,
+          menitPerHari: int.parse(selectedMenit!.split(" ")[0]),
         ),
       );
+
+      // Tampilkan dialog selama 3 detik
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => Dialog(
+          backgroundColor: Colors.transparent,
+          child: Stack(
+            alignment: Alignment.topCenter,
+            children: [
+              Container(
+                margin: const EdgeInsets.only(top: 60),
+                padding: const EdgeInsets.only(
+                  top: 80,
+                  bottom: 24,
+                  left: 24,
+                  right: 24,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(color: Colors.black26),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      "Selamat Datang!",
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.quicksand(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      "Yuk, mulai petualangan serunya! ",
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.quicksand(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xff404040),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Positioned(
+                top: 0,
+                child: SizedBox(
+                  width: 130,
+                  height: 130,
+                  child: Center(
+                    child: SvgPicture.asset(
+                      'assets/lamp.svg',
+                      width: 120,
+                      height: 120,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+
+      await Future.delayed(const Duration(seconds: 2));
+      if (mounted) {
+        Navigator.of(context).pop(); // Tutup dialog
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) => BottomNavbar(),
+          ),
+        );
+      }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Gagal simpan data: \$e')),
+        SnackBar(content: Text('Gagal simpan data: $e')),
       );
     }
   }

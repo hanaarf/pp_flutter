@@ -5,9 +5,8 @@ import 'package:pp_flutter/pages/peringkat.dart';
 import 'package:pp_flutter/pages/profile.dart';
 
 class BottomNavbar extends StatefulWidget {
-  final bool showDialogOnHome;
   final int initialIndex;
-  const BottomNavbar({super.key, this.showDialogOnHome = false, this.initialIndex = 0,});
+  const BottomNavbar({super.key, this.initialIndex = 0});
 
   @override
   State<BottomNavbar> createState() => _BottomNavbarState();
@@ -15,18 +14,16 @@ class BottomNavbar extends StatefulWidget {
 
 class _BottomNavbarState extends State<BottomNavbar> {
   int _selectedIndex = 0;
-  bool _shouldShowDialog = false;
 
   @override
   void initState() {
     super.initState();
-     _selectedIndex = widget.initialIndex;
-    _shouldShowDialog = widget.showDialogOnHome;
+    _selectedIndex = widget.initialIndex;
   }
 
   List<Widget> _buildPages() {
     return [
-      HomePage(shouldShowDialog: _shouldShowDialog),
+      HomePage(),
       Peringkat(),
       ProfilePage(),
     ];
@@ -35,10 +32,6 @@ class _BottomNavbarState extends State<BottomNavbar> {
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
-      // Matikan showDialog setelah HomePage dipilih pertama kali
-      if (index == 0 && _shouldShowDialog) {
-        _shouldShowDialog = false;
-      }
     });
   }
 
@@ -65,7 +58,6 @@ class _BottomNavbarState extends State<BottomNavbar> {
       ),
     );
   }
-
 
   Widget _buildNavItem(String svgAsset, String label, int index) {
     bool isSelected = _selectedIndex == index;

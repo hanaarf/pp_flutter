@@ -45,6 +45,8 @@ dependencies:
   smooth_page_indicator: ^1.2.1
   webview_flutter: ^4.11.0
   flutter_html: ^3.0.0
+  lottie: ^3.3.1
+  collection: ^1.19.1
 
 dev_dependencies:
   flutter_test:
@@ -77,6 +79,7 @@ flutter:
     - assets/bottomNav/
     - assets/avatar/
     - assets/profile/
+    - assets/lottie/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

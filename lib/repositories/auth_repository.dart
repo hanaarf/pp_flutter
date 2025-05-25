@@ -158,4 +158,17 @@ class AuthRepository {
       throw Exception(json['message'] ?? 'Gagal mengubah avatar');
     }
   }
+
+  Future<void> sendResetPasswordEmail(String email) async {
+  final response = await http.post(
+    Uri.parse('$baseUrl/forgot-password'),
+    body: {'email': email},
+  );
+
+  if (response.statusCode != 200) {
+    final body = jsonDecode(response.body);
+    throw Exception(body['message'] ?? 'Gagal mengirim email reset password');
+  }
+}
+
 }

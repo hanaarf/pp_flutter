@@ -394,19 +394,27 @@ class _SignupPageState extends State<SignupPage> {
   }
 
   Widget _buildChecklistTile(String text, bool checked) {
-    return Row(
-      children: [
-        Checkbox(value: checked, onChanged: null),
-        SizedBox(width: 8),
-        Text(
-          text,
-          style: TextStyle(
-            color: Color(0xff6A6A6A),
-            fontWeight: FontWeight.w600,
-            fontSize: 12,
-          ),
+  return Row(
+    children: [
+      IgnorePointer(
+        child: Checkbox(
+          value: checked,
+          onChanged: (_) {},
+          activeColor: Colors.green,
+          checkColor: Colors.white,
         ),
-      ],
-    );
-  }
+      ),
+      SizedBox(width: 8),
+      Text(
+        text,
+        style: TextStyle(
+          color: Color(0xff6A6A6A),
+          fontWeight: FontWeight.w600,
+          fontSize: 12,
+        ),
+      ),
+    ],
+  );
+}
+
 }

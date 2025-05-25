@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pp_flutter/blocs/forgotPw/forgot_pw_bloc.dart';
 import 'package:pp_flutter/pages/component/bottom_navbar.dart';
+import 'package:pp_flutter/pages/forgotPw.dart';
 import 'package:pp_flutter/pages/signup.dart';
+import 'package:pp_flutter/repositories/auth_repository.dart';
 import '../blocs/login/login_bloc.dart';
 import '../blocs/login/login_event.dart';
 import '../blocs/login/login_state.dart';
@@ -103,6 +106,40 @@ class _SigninPagesState extends State<SigninPages> {
                                 _isPasswordVisible = !_isPasswordVisible;
                               });
                             },
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              top: 8.0,
+                              bottom: 8.0,
+                            ),
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder:
+                                        (_) => BlocProvider(
+                                          create:
+                                              (_) => ForgotPasswordBloc(
+                                                AuthRepository(),
+                                              ),
+                                          child: Forgotpw(),
+                                        ),
+                                  ),
+                                );
+                              },
+                              child: Text(
+                                'Lupa kata sandi?',
+                                style: GoogleFonts.montserrat(
+                                  color: Color(0xff0000EE),
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                         SizedBox(height: 70),
