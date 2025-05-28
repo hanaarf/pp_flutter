@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pp_flutter/blocs/follow/follow_bloc.dart';
 import 'package:pp_flutter/models/user_model.dart';
 import 'package:pp_flutter/pages/detailUser.dart';
+import 'package:pp_flutter/repositories/follow_repository.dart';
 import 'package:pp_flutter/repositories/siswa_repositori.dart';
 
 class SearchUser extends StatefulWidget {
@@ -138,12 +141,13 @@ class _SearchUserState extends State<SearchUser> {
                             .map(
                               (user) => GestureDetector(
                                 onTap: () {
-                                  Navigator.push(
+                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder:
-                                          (context) =>
-                                              UserDetailPage(user: user),
+                                      builder: (context) => BlocProvider(
+                                        create: (_) => FollowBloc(FollowRepository()),
+                                        child: UserDetailPage(user: user),
+                                      ),
                                     ),
                                   );
                                 },

@@ -11,12 +11,13 @@ import 'package:pp_flutter/blocs/ulasan/ulasan_bloc.dart';
 import 'package:pp_flutter/blocs/ulasan/ulasan_event.dart';
 import 'package:pp_flutter/blocs/ulasan/ulasan_state.dart';
 import 'package:pp_flutter/models/response/profile_response.dart';
-import 'package:pp_flutter/pages/component/follow.dart';
+import 'package:pp_flutter/pages/followPage.dart';
 import 'package:pp_flutter/pages/signin.dart';
 import 'package:pp_flutter/pages/ubah_menit.dart';
 import 'package:pp_flutter/pages/ubah_profile.dart';
 import 'package:pp_flutter/repositories/auth_repository.dart';
 import 'package:pp_flutter/repositories/ulasan_repository.dart';
+import 'package:pp_flutter/repositories/follow_repository.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -31,6 +32,8 @@ class _ProfilePageState extends State<ProfilePage> {
   bool isLoading = true;
   String selectedAvatar = 'assets/avatar/avatar.png';
   bool sudahUlasan = false;
+  int followersCount = 0;
+  int followingCount = 0;
 
   @override
   void initState() {
@@ -52,6 +55,8 @@ class _ProfilePageState extends State<ProfilePage> {
         selectedAvatar = 'assets/avatar/${data.image ?? 'avatar.png'}';
         isLoading = false;
       });
+      // Panggil fetchCounts setelah profileData terisi
+      fetchCounts();
     } catch (e) {
       if (!mounted) return;
       setState(() {
@@ -74,6 +79,19 @@ class _ProfilePageState extends State<ProfilePage> {
     } catch (e) {
       // Optional: tampilkan error
     }
+  }
+
+  Future<void> fetchCounts() async {
+    if (profileData == null) return;
+    final repo = FollowRepository();
+    final userId = profileData!.id;
+    final followers = await repo.getFollowersCount(userId);
+    final following = await repo.getFollowingCount(userId);
+    if (!mounted) return;
+    setState(() {
+      followersCount = followers;
+      followingCount = following;
+    });
   }
 
   void _showAvatarPicker() {
@@ -253,9 +271,29 @@ class _ProfilePageState extends State<ProfilePage> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            buildCounter("1", "Mengikuti"),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => FollowPage(initialIndex: 0, userId: profileData?.id ?? 0),
+                                  ),
+                                ).then((_) => fetchCounts());
+                              },
+                              child: buildCounter(followingCount.toString(), "Mengikuti"),
+                            ),
                             Container(width: 1, height: 50, color: Colors.grey),
-                            buildCounter("10", "Pengikut"),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => FollowPage(initialIndex: 1, userId: profileData?.id ?? 0),
+                                  ),
+                                ).then((_) => fetchCounts()); 
+                              },
+                              child: buildCounter(followersCount.toString(), "Pengikut"),
+                            ),
                           ],
                         ),
                       ),
@@ -628,6 +666,21 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
   }
+
+  Widget buildCounter(String value, String label) {
+  return Column(
+    children: [
+      Text(
+        value,
+        style: GoogleFonts.quicksand(fontSize: 24, fontWeight: FontWeight.bold),
+      ),
+      Text(
+        label,
+        style: GoogleFonts.quicksand(fontSize: 14, fontWeight: FontWeight.w500),
+      ),
+    ],
+  );
+}
 
   
 }

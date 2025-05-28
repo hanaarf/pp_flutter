@@ -6,6 +6,8 @@ import 'package:pp_flutter/blocs/follow/follow_bloc.dart';
 import 'package:pp_flutter/blocs/follow/follow_event.dart';
 import 'package:pp_flutter/blocs/follow/follow_state.dart';
 import 'package:pp_flutter/models/user_model.dart';
+import 'package:pp_flutter/pages/followPage.dart';
+import 'package:pp_flutter/repositories/follow_repository.dart';
 
 class UserDetailPage extends StatefulWidget {
   final UserModel user;
@@ -17,12 +19,26 @@ class UserDetailPage extends StatefulWidget {
 }
 
 class _UserDetailPageState extends State<UserDetailPage> {
+  int followersCount = 0;
+  int followingCount = 0;
 
   @override
   void initState() {
     super.initState();
     // Cek status follow saat halaman dibuka
     context.read<FollowBloc>().add(CheckFollowStatus(widget.user.id));
+    fetchCounts();
+  }
+
+  Future<void> fetchCounts() async {
+    final repo = FollowRepository();
+    final followers = await repo.getFollowersCount(widget.user.id);
+    final following = await repo.getFollowingCount(widget.user.id);
+    if (!mounted) return;
+    setState(() {
+      followersCount = followers;
+      followingCount = following;
+    });
   }
 
   @override
@@ -131,9 +147,23 @@ class _UserDetailPageState extends State<UserDetailPage> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            _buildCounter("1", "Mengikuti"),
+                            _buildCounter(followingCount.toString(), "Mengikuti", () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => FollowPage(initialIndex: 0, userId: widget.user.id),
+                                ),
+                              );
+                            }),
                             Container(width: 1, height: 50, color: Colors.grey),
-                            _buildCounter("10", "Pengikut"),
+                            _buildCounter(followersCount.toString(), "Pengikut", () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => FollowPage(initialIndex: 1, userId: widget.user.id),
+                                ),
+                              );
+                            }),
                           ],
                         ),
                       ),
@@ -267,15 +297,18 @@ class _UserDetailPageState extends State<UserDetailPage> {
     );
   }
 
-  Widget _buildCounter(String value, String label) {
-    return Column(
-      children: [
-        Text(
-          value,
-          style: GoogleFonts.quicksand(fontSize: 24, fontWeight: FontWeight.bold),
-        ),
-        Text(label, style: GoogleFonts.quicksand(fontSize: 14, fontWeight: FontWeight.w500)),
-      ],
+  Widget _buildCounter(String value, String label, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Text(
+            value,
+            style: GoogleFonts.quicksand(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
+          Text(label, style: GoogleFonts.quicksand(fontSize: 14, fontWeight: FontWeight.w500)),
+        ],
+      ),
     );
   }
 

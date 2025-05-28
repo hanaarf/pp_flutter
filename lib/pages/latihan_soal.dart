@@ -20,7 +20,7 @@ class QuizPage extends StatefulWidget {
 
 class _QuizPageState extends State<QuizPage> {
   int _currentIndex = 0;
-  String? _selectedOptionKey; // A, B, C
+  String? _selectedOptionKey; 
   bool _isAnswerChecked = false;
 
   final AudioPlayer _audioPlayer = AudioPlayer();
