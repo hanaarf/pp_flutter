@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/services.dart';
+import 'package:pp_flutter/blocs/follow/follow_bloc.dart';
 import 'package:pp_flutter/models/leaderboardUser';
 import 'package:pp_flutter/models/response/profile_response.dart';
 import 'package:pp_flutter/models/user_model.dart';
+import 'package:pp_flutter/pages/component/bottom_navbar.dart';
 import 'package:pp_flutter/pages/detailUser.dart';
 import 'package:pp_flutter/pages/searchUser.dart';
 import 'package:pp_flutter/repositories/auth_repository.dart';
+import 'package:pp_flutter/repositories/follow_repository.dart';
 import 'package:pp_flutter/repositories/siswa_repositori.dart';
 
 class Peringkat extends StatefulWidget {
@@ -196,23 +200,41 @@ class _PeringkatState extends State<Peringkat> {
                             final user = leaderboardUsers[index];
                             return GestureDetector(
                               onTap: () {
-                                final userModel = UserModel(
-                                  id: user.id,
-                                  nama: user.name,
-                                  xp: user.xp.toString(),
-                                  img: getAvatarPath(user.avatar),
-                                  jenjang: user.jenjang,
-                                  kelas: user.kelas,
-                                  createdAt: DateTime.now().toIso8601String(),
-                                );
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder:
-                                        (context) =>
-                                            UserDetailPage(user: userModel),
-                                  ),
-                                );
+                                // Pastikan profile sudah di-load
+                                if (profile != null && user.id == profile!.id) {
+                                  // Pindah ke tab Profile (index 2)
+                                  Navigator.of(context).popUntil((route) => route.isFirst); // Kembali ke root
+                                  // Ganti tab ke Profile
+                                  // Jika pakai BottomNavbar sebagai root:
+                                  // Kirim event ke BottomNavbar atau gunakan state management
+                                  // Atau, jika BottomNavbar di-rebuild, bisa pakai:
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => BottomNavbar(initialIndex: 2),
+                                    ),
+                                  );
+                                } else {
+                                  // Buka detail user lain
+                                  final userModel = UserModel(
+                                    id: user.id,
+                                    nama: user.name,
+                                    xp: user.xp.toString(),
+                                    img: getAvatarPath(user.avatar),
+                                    jenjang: user.jenjang,
+                                    kelas: user.kelas,
+                                    createdAt: DateTime.now().toIso8601String(),
+                                  );
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => BlocProvider(
+                                        create: (_) => FollowBloc(FollowRepository()),
+                                        child: UserDetailPage(user: userModel),
+                                      ),
+                                    ),
+                                  );
+                                }
                               },
                               child: Container(
                                 margin: const EdgeInsets.only(bottom: 18),

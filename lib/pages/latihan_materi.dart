@@ -237,8 +237,8 @@ class LatihanMateriPage extends StatelessWidget {
                                       backgroundColor: item.statusLatihan == 'selesai'
                                           ? Colors.grey[300]
                                           : item.statusLatihan == 'lanjut'
-                                              ? Colors.yellow[700]
-                                              : Color(0xff69D2C7),
+                                              ? Color(0xff69D2C7)
+                                              : Colors.yellow[700],
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(20),
                                         side: BorderSide(

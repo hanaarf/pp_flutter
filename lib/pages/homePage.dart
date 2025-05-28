@@ -12,6 +12,7 @@ import 'package:pp_flutter/pages/layar_belajar.dart';
 import 'package:pp_flutter/pages/searchMateri.dart';
 import 'package:pp_flutter/repositories/auth_repository.dart';
 import 'dart:async';
+import 'package:flutter/services.dart'; 
 
 import 'package:pp_flutter/repositories/materi_repository.dart';
 import 'package:pp_flutter/repositories/siswa_repositori.dart';
@@ -24,10 +25,17 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  bool isLoadingProfile = true;
+  static DateTime? _globalStartTime;
+  static bool _globalSudahPopup = false;
 
+  bool isLoadingProfile = true;
   String userName = '';
   String jenjang = 'sd';
+
+  // Timer belajar
+  Timer? _timer;
+  int _detikSisa = 0;
+  int _belajarMenitPerHari = 2; // Default, nanti diisi dari profile
 
   @override
   void initState() {
@@ -39,16 +47,193 @@ class _HomePageState extends State<HomePage> {
   Future<void> fetchUserProfile() async {
     try {
       final profile = await AuthRepository().getProfile();
+      if (!mounted) return;
       setState(() {
         userName = profile.name;
         jenjang = profile.jenjang.toLowerCase();
         isLoadingProfile = false;
+        _belajarMenitPerHari = profile.belajarMenitPerHari > 0 ? profile.belajarMenitPerHari : 2;
+        // Set global start time hanya jika belum ada
+        if (_globalStartTime == null) {
+          _globalStartTime = DateTime.now();
+          _globalSudahPopup = false;
+        }
       });
+      _startBelajarTimer();
     } catch (_) {
+      if (!mounted) return;
       setState(() {
         isLoadingProfile = false;
       });
     }
+  }
+
+  void _startBelajarTimer() {
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted) return; // <-- Tambahkan ini
+      if (_globalStartTime == null) return;
+      final now = DateTime.now();
+      final elapsed = now.difference(_globalStartTime!).inSeconds;
+      final total = _belajarMenitPerHari * 60;
+      final sisa = total - elapsed;
+      if (sisa > 0) {
+        if (!mounted) return; // <-- Tambahkan ini juga sebelum setState
+        setState(() {
+          _detikSisa = sisa;
+        });
+      } else {
+        timer.cancel();
+        if (!_globalSudahPopup) {
+          _globalSudahPopup = true;
+          if (mounted) {
+            _showWaktuHabisDialog();
+          }
+        }
+      }
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Cek waktu habis setiap kali homepage muncul
+    if (_globalStartTime != null && !_globalSudahPopup) {
+      final now = DateTime.now();
+      final elapsed = now.difference(_globalStartTime!).inSeconds;
+      final total = _belajarMenitPerHari * 60;
+      if (elapsed >= total) {
+        _globalSudahPopup = true;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _showWaktuHabisDialog();
+        });
+      }
+    }
+  }
+
+  void _showWaktuHabisDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => Dialog(
+        backgroundColor: Colors.transparent,
+        child: Stack(
+          alignment: Alignment.topCenter,
+          children: [
+            Container(
+              margin: const EdgeInsets.only(top: 60),
+              padding: const EdgeInsets.only(
+                top: 80,
+                bottom: 24,
+                left: 24,
+                right: 24,
+              ),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(24),
+                border: Border.all(color: Colors.black26),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    "Waktu Belajar Habis!",
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.quicksand(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    "Yeay! Kamu sudah belajar dengan baik! Sekarang waktunya rehat sejenak  ",
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.quicksand(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: Color(0xff404040),
+                    ),
+                  ),
+                  SizedBox(height: 24),
+                  Column(
+                    children: [
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            SystemNavigator.pop(); // keluar aplikasi
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xffFAAE2B),
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            padding: EdgeInsets.symmetric(vertical: 14),
+                          ),
+                          child: Text(
+                            "Keluar Aplikasi",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 12),
+                      SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          style: OutlinedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            side: BorderSide(color: Colors.black, width: 1),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            padding: EdgeInsets.symmetric(vertical: 14),
+                          ),
+                          child: Text(
+                            "Tetap di Aplikasi",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Positioned(
+              top: 0,
+              child: SizedBox(
+                width: 130,
+                height: 130,
+                child: Center(
+                  child: SvgPicture.asset(
+                    'assets/lamp.svg',
+                    width: 120,
+                    height: 120,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
   }
 
   bool isLoadingMateri = true;
@@ -57,15 +242,16 @@ class _HomePageState extends State<HomePage> {
   Future<void> fetchRekomendasiMateri() async {
     try {
       final result = await MateriRepository().getRekomendasiMateri();
+      if (!mounted) return; // Tambahkan ini
       setState(() {
         rekomendasiMateri = result;
         isLoadingMateri = false;
       });
     } catch (e) {
+      if (!mounted) return; // Tambahkan ini juga
       setState(() {
         isLoadingMateri = false;
       });
-      // Bisa juga tampilkan snackbar kalau mau
       print('Error: $e');
     }
   }
@@ -83,13 +269,23 @@ class _HomePageState extends State<HomePage> {
                 Container(
                   height: 180,
                   decoration: BoxDecoration(
-                    color: Color(0xFFFAAE2B),
-                    borderRadius: BorderRadius.vertical(
+                    color: const Color(0xFFFAAE2B),
+                    borderRadius: const BorderRadius.vertical(
                       bottom: Radius.circular(60),
                     ),
                   ),
                 ),
-
+                Positioned.fill(
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    child: SvgPicture.asset(
+                      'assets/home/bg-home.svg', 
+                      fit: BoxFit.cover,
+                      height: 145,
+                      width: double.infinity,
+                    ),
+                  ),
+                ),
                 Positioned(
                   top: 110,
                   left: 20,

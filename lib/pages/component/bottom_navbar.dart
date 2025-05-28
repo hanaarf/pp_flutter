@@ -62,6 +62,12 @@ class _BottomNavbarState extends State<BottomNavbar> {
   Widget _buildNavItem(String svgAsset, String label, int index) {
     bool isSelected = _selectedIndex == index;
 
+    // Ganti nama file jika aktif
+    String assetPath = svgAsset;
+    if (isSelected) {
+      assetPath = svgAsset.replaceFirst('.svg', '-act.svg');
+    }
+
     return GestureDetector(
       onTap: () => _onItemTapped(index),
       child: AnimatedContainer(
@@ -71,13 +77,10 @@ class _BottomNavbarState extends State<BottomNavbar> {
           mainAxisSize: MainAxisSize.min,
           children: [
             SvgPicture.asset(
-              svgAsset,
+              assetPath,
               width: 24,
               height: 24,
-              colorFilter: ColorFilter.mode(
-                isSelected ? const Color(0xff00D4CD) : const Color(0xff9E9E9E),
-                BlendMode.srcIn,
-              ),
+              // Hapus colorFilter, biarkan warna asli SVG
             ),
             const SizedBox(height: 4),
             Text(

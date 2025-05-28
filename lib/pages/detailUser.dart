@@ -1,153 +1,281 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pp_flutter/blocs/follow/follow_bloc.dart';
+import 'package:pp_flutter/blocs/follow/follow_event.dart';
+import 'package:pp_flutter/blocs/follow/follow_state.dart';
 import 'package:pp_flutter/models/user_model.dart';
 
-class UserDetailPage extends StatelessWidget {
+class UserDetailPage extends StatefulWidget {
   final UserModel user;
 
   const UserDetailPage({super.key, required this.user});
 
   @override
+  State<UserDetailPage> createState() => _UserDetailPageState();
+}
+
+class _UserDetailPageState extends State<UserDetailPage> {
+
+  @override
+  void initState() {
+    super.initState();
+    // Cek status follow saat halaman dibuka
+    context.read<FollowBloc>().add(CheckFollowStatus(widget.user.id));
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFF4AF44),
-        elevation: 0,
-        leading: IconButton(
-          padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 25),
-          icon: const Icon(Icons.arrow_back),
-          color: Colors.black,
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
-      backgroundColor: const Color(0xffF4AE47),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Spacer(),
-              Container(
-                margin: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 40,
+      backgroundColor: const Color(0xFFFAAE2B),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Container(
+                  height: 130,
+                  width: double.infinity,
+                  color: const Color(0xFFFAAE2B),
+                  child: SvgPicture.asset(
+                    'assets/profile/profile.svg',
+                    fit: BoxFit.cover,
+                  ),
                 ),
-                padding: const EdgeInsets.symmetric(
-                  vertical: 40,
-                  horizontal: 25,
+                Positioned(
+                  top: 30, // Atur posisi sesuai kebutuhan
+                  left: 16,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.8),
+                      shape: BoxShape.circle,
+                    ),
+                    child: IconButton(
+                      icon: const Icon(Icons.arrow_back, color: Colors.black),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ),
                 ),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(40),
-                ),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 30,
-                          backgroundImage: AssetImage(user.img),
+              ],
+            ),
+            Stack(
+              clipBehavior: Clip.none,
+              alignment: Alignment.center,
+              children: [
+                Container(
+                  width: double.infinity,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(40),
+                    ),
+                  ),
+                  padding: const EdgeInsets.fromLTRB(20, 70, 20, 30),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Center(
+                        child: Column(
+                          children: [
+                            Text(
+                              widget.user.nama[0].toUpperCase() + widget.user.nama.substring(1),
+                              style: GoogleFonts.quicksand(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              '${widget.user.jenjang} : ${widget.user.kelas}',
+                              style: GoogleFonts.quicksand(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 6,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                border: Border.all(
+                                  color: Color(0xffFAAE2B),
+                                  width: 1,
+                                ),
+                                borderRadius: BorderRadius.circular(24),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/avatar/bi_trophy.svg',
+                                    width: 15,
+                                  ),
+                                  SizedBox(width: 6),
+                                  Text(
+                                    'Total xp: ${widget.user.xp}',
+                                    style: TextStyle(color: Color(0xffFAAE2B)),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 25),
+                          ],
                         ),
-                        const SizedBox(width: 12),
-                        Flexible( // Ganti Column jadi Flexible agar Text tidak overflow
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                user.nama[0].toUpperCase() + user.nama.substring(1),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            _buildCounter("1", "Mengikuti"),
+                            Container(width: 1, height: 50, color: Colors.grey),
+                            _buildCounter("10", "Pengikut"),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      // Tombol Ikuti
+                      BlocBuilder<FollowBloc, FollowState>(
+                        builder: (context, state) {
+                          bool isFollowing = false;
+                          if (state is FollowLoaded) isFollowing = state.isFollowing;
+                          return SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: isFollowing ? Colors.grey : Colors.pinkAccent,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(24),
+                                ),
+                              ),
+                              onPressed: state is FollowLoading
+                                  ? null
+                                  : () {
+                                      if (isFollowing) {
+                                        context.read<FollowBloc>().add(UnfollowUser(widget.user.id));
+                                      } else {
+                                        context.read<FollowBloc>().add(FollowUser(widget.user.id));
+                                      }
+                                    },
+                              child: Text(
+                                isFollowing ? "Batal Ikuti" : "Ikuti",
                                 style: GoogleFonts.quicksand(
                                   fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                maxLines: 2, // Biar bisa pindah ke bawah jika panjang
-                                overflow: TextOverflow.ellipsis,
-                                softWrap: true,
-                              ),
-                              const SizedBox(height: 6),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 6,
-                                ),
-                                decoration: BoxDecoration(
                                   color: Colors.white,
-                                  border: Border.all(
-                                    color: const Color(0xffFAAE2B),
-                                    width: 1.2,
-                                  ),
-                                  borderRadius: BorderRadius.circular(30),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    SvgPicture.asset(
-                                      'assets/avatar/bi_trophy.svg',
-                                      width: 15,
-                                    ),
-                                    const SizedBox(width: 6),
-                                    Text(
-                                      'Total xp: ${user.xp}',
-                                      style: const TextStyle(color: Color(0xffFAAE2B)),
-                                    ),
-                                  ],
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 30),
+                      // Informasi
+                      Text(
+                        "Informasi",
+                        style: GoogleFonts.montserrat(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.school,
-                          size: 18,
-                          color: Colors.grey,
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          '${user.jenjang} : ${user.kelas}',
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Icon(Icons.calendar_today, size: 16),
+                          SizedBox(width: 8),
+                           Text(
+                          'Bergabung ${_formatTanggal(widget.user.createdAt)}',
                           style: GoogleFonts.quicksand(
                             color: Colors.grey,
                             fontSize: 14,
                           ),
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 15),
-
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.calendar_today,
-                          size: 18,
-                          color: Colors.grey,
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          'Bergabung ${_formatTanggal(user.createdAt)}',
-                          style: GoogleFonts.quicksand(
-                            color: Colors.grey,
-                            fontSize: 14,
+                        ],
+                      ),
+                      const SizedBox(height: 30),
+                      // Pencapaian
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Pencapaian",
+                            style: GoogleFonts.montserrat(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
+                          Text(
+                            "Lihat Semua",
+                            style: GoogleFonts.quicksand(color: Colors.grey),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      // Box Pencapaian
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey.shade300),
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                      ],
-                    ),
-                  ],
+                        child: Column(
+                          children: [
+                            SvgPicture.asset(
+                              'assets/profile/belum-ada-reward.svg',
+                              width: 100,
+                              height: 100,
+                            ),
+                            const SizedBox(height: 8),
+                            const Text(
+                              "Belum Ada Reward",
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              const Spacer(flex: 2),
-            ],
-          ),
+                Positioned(
+                  top: -60,
+                  child: Stack(
+                    children: [
+                      CircleAvatar(
+                        radius: 55,
+                        backgroundColor: Colors.white,
+                        child: CircleAvatar(
+                          radius: 50,
+                          backgroundImage: AssetImage(widget.user.img),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
+    );
+  }
+
+  Widget _buildCounter(String value, String label) {
+    return Column(
+      children: [
+        Text(
+          value,
+          style: GoogleFonts.quicksand(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+        Text(label, style: GoogleFonts.quicksand(fontSize: 14, fontWeight: FontWeight.w500)),
+      ],
     );
   }
 
@@ -159,4 +287,5 @@ class UserDetailPage extends StatelessWidget {
     ];
     return '${bulan[dt.month - 1]} ${dt.year}';
   }
+
 }

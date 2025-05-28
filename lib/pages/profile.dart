@@ -11,10 +11,12 @@ import 'package:pp_flutter/blocs/ulasan/ulasan_bloc.dart';
 import 'package:pp_flutter/blocs/ulasan/ulasan_event.dart';
 import 'package:pp_flutter/blocs/ulasan/ulasan_state.dart';
 import 'package:pp_flutter/models/response/profile_response.dart';
+import 'package:pp_flutter/pages/component/follow.dart';
 import 'package:pp_flutter/pages/signin.dart';
 import 'package:pp_flutter/pages/ubah_menit.dart';
 import 'package:pp_flutter/pages/ubah_profile.dart';
 import 'package:pp_flutter/repositories/auth_repository.dart';
+import 'package:pp_flutter/repositories/ulasan_repository.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -28,11 +30,13 @@ class _ProfilePageState extends State<ProfilePage> {
   ProfileResponse? profileData;
   bool isLoading = true;
   String selectedAvatar = 'assets/avatar/avatar.png';
+  bool sudahUlasan = false;
 
   @override
   void initState() {
     super.initState();
     fetchProfile();
+    fetchStatusUlasan();
     _ulasanController.addListener(() {
       if (mounted) setState(() {});
     });
@@ -56,6 +60,19 @@ class _ProfilePageState extends State<ProfilePage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Gagal mengambil data profil: $e')),
       );
+    }
+  }
+
+  Future<void> fetchStatusUlasan() async {
+    try {
+      final repo = UlasanRepository();
+      final status = await repo.cekSudahUlasan();
+      if (!mounted) return;
+      setState(() {
+        sudahUlasan = status;
+      });
+    } catch (e) {
+      // Optional: tampilkan error
     }
   }
 
@@ -190,86 +207,6 @@ class _ProfilePageState extends State<ProfilePage> {
                     fit: BoxFit.cover,
                   ),
                 ),
-                // Positioned(
-                //   top: 40,
-                //   right: 20,
-                //   child: BlocListener<LogoutBloc, LogoutState>(
-                //     listener: (context, state) {
-                //       if (state is LogoutSuccess) {
-                //         Navigator.pushAndRemoveUntil(
-                //           context,
-                //           MaterialPageRoute(
-                //             builder: (_) => const SigninPages(),
-                //           ),
-                //           (route) => false,
-                //         );
-                //       } else if (state is LogoutFailure) {
-                //         ScaffoldMessenger.of(context).showSnackBar(
-                //           SnackBar(
-                //             content: Text("Logout gagal: ${state.message}"),
-                //           ),
-                //         );
-                //       }
-                //     },
-                //     child: GestureDetector(
-                //       onTap: () {
-                //         showDialog(
-                //           context: context,
-                //           builder: (BuildContext context) {
-                //             return AlertDialog(
-                //               shape: RoundedRectangleBorder(
-                //                 borderRadius: BorderRadius.circular(20),
-                //               ),
-                //               title: Text(
-                //                 "Konfirmasi Logout",
-                //                 style: GoogleFonts.quicksand(
-                //                   fontSize: 20,
-                //                   fontWeight: FontWeight.bold,
-                //                 ),
-                //               ),
-                //               content: Text(
-                //                 "Apakah kamu yakin ingin keluar dari akun?",
-                //                 style: GoogleFonts.quicksand(
-                //                   fontWeight: FontWeight.w500,
-                //                 ),
-                //               ),
-                //               actions: [
-                //                 TextButton(
-                //                   child: const Text("Batal"),
-                //                   onPressed: () => Navigator.of(context).pop(),
-                //                 ),
-                //                 ElevatedButton(
-                //                   style: ElevatedButton.styleFrom(
-                //                     backgroundColor: const Color(0xffFFDDFAA),
-                //                   ),
-                //                   onPressed: () {
-                //                     Navigator.of(context).pop();
-                //                     context.read<LogoutBloc>().add(
-                //                       LogoutRequested(),
-                //                     );
-                //                   },
-                //                   child: const Text("Ya"),
-                //                 ),
-                //               ],
-                //             );
-                //           },
-                //         );
-                //       },
-                //       child: Container(
-                //         padding: const EdgeInsets.all(8),
-                //         decoration: BoxDecoration(
-                //           color: Colors.white.withOpacity(0.2),
-                //           shape: BoxShape.circle,
-                //         ),
-                //         child: const Icon(
-                //           Icons.logout,
-                //           color: Colors.black87,
-                //           size: 24,
-                //         ),
-                //       ),
-                //     ),
-                //   ),
-                // ),
               ],
             ),
 
@@ -310,6 +247,19 @@ class _ProfilePageState extends State<ProfilePage> {
                           ],
                         ),
                       ),
+                       SizedBox(height: 10,),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            buildCounter("1", "Mengikuti"),
+                            Container(width: 1, height: 50, color: Colors.grey),
+                            buildCounter("10", "Pengikut"),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 25),
                       Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
@@ -338,6 +288,27 @@ class _ProfilePageState extends State<ProfilePage> {
                           ],
                         ),
                       ),
+                       const SizedBox(height: 30),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                             SvgPicture.asset(
+                                'assets/profile/xp200.svg',
+                                width: 67,
+                              ),
+                             SvgPicture.asset(
+                                'assets/profile/xp400.svg',
+                                width: 67,
+                              ),
+                             SvgPicture.asset(
+                                'assets/profile/xp600.svg',
+                                width: 67,
+                              ),
+                          ],
+                        ),
+                      ),
                       const SizedBox(height: 30),
                       Text(
                         "Ubah Profile",
@@ -348,7 +319,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         children: [
                           Container(
                             decoration: BoxDecoration(
-                              color: const Color(0xFFFFC860),
+                              color: const Color(0xFF00D4CD),
                               borderRadius: BorderRadius.circular(10),
                             ),
                             padding: const EdgeInsets.all(8),
@@ -399,7 +370,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         children: [
                           Container(
                             decoration: BoxDecoration(
-                              color: const Color(0xFFFFC860),
+                              color: const Color(0xFF00D4CD),
                               borderRadius: BorderRadius.circular(10),
                             ),
                             padding: const EdgeInsets.all(8),
@@ -439,73 +410,70 @@ class _ProfilePageState extends State<ProfilePage> {
                         ],
                       ),
                       const Divider(height: 30),
-                      Text(
-                        "Ulasan",
-                        style: GoogleFonts.montserrat(color: Colors.grey),
-                      ),
-                      const SizedBox(height: 10),
-                      BlocListener<UlasanBloc, UlasanState>(
-                        listener: (context, state) {
-                          if (state is UlasanSuccess) {
-                            _ulasanController.clear();
-                            _showCustomSnackBar(
-                              context,
-                              "Ulasan berhasil dikirim!",
-                            );
-                          } else if (state is UlasanFailure) {
-                            _showCustomSnackBar(
-                              context,
-                              "Gagal mengirim: ${state.message}",
-                              isSuccess: false,
-                            );
-                          }
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(16),
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Colors.black12,
-                                offset: Offset(2, 2),
-                                blurRadius: 4,
-                              ),
-                            ],
-                          ),
-                          child: Stack(
-                            children: [
-                              TextField(
-                                controller: _ulasanController,
-                                minLines: 4,
-                                maxLines: 6,
-                                decoration: InputDecoration(
-                                  hintText:
-                                      "Berikan pendapatmu tentang aplikasi ini...",
-                                  hintStyle: GoogleFonts.montserrat(
-                                    color: Colors.grey,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 14,
-                                  ),
-                                  contentPadding: const EdgeInsets.fromLTRB(
-                                    12,
-                                    12,
-                                    48,
-                                    12,
-                                  ),
-                                  border: OutlineInputBorder(
-                                    borderSide: BorderSide.none,
-                                    borderRadius: BorderRadius.circular(12),
+                      if (!sudahUlasan) ...[
+                        Text(
+                          "Ulasan",
+                          style: GoogleFonts.montserrat(color: Colors.grey),
+                        ),
+                        const SizedBox(height: 10),
+                        BlocListener<UlasanBloc, UlasanState>(
+                          listener: (context, state) {
+                            if (state is UlasanSuccess) {
+                              _ulasanController.clear();
+                              _showCustomSnackBar(context, "Ulasan berhasil dikirim!");
+                              setState(() {
+                                sudahUlasan = true; // Form hilang setelah sukses kirim
+                              });
+                            } else if (state is UlasanFailure) {
+                              _showCustomSnackBar(context, "Gagal mengirim: ${state.message}", isSuccess: false);
+                            }
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(16),
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: Colors.black12,
+                                  offset: Offset(2, 2),
+                                  blurRadius: 4,
+                                ),
+                              ],
+                            ),
+                            child: Stack(
+                              children: [
+                                TextField(
+                                  controller: _ulasanController,
+                                  minLines: 4,
+                                  maxLines: 6,
+                                  decoration: InputDecoration(
+                                    hintText:
+                                        "Berikan pendapatmu tentang aplikasi ini...",
+                                    hintStyle: GoogleFonts.montserrat(
+                                      color: Colors.grey,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 14,
+                                    ),
+                                    contentPadding: const EdgeInsets.fromLTRB(
+                                      12,
+                                      12,
+                                      48,
+                                      12,
+                                    ),
+                                    border: OutlineInputBorder(
+                                      borderSide: BorderSide.none,
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Positioned(
-                                bottom: 8,
-                                right: 8,
-                                child: GestureDetector(
-                                  onTap:
-                                      _ulasanController.text.isNotEmpty
-                                          ? () {
+                                Positioned(
+                                  bottom: 8,
+                                  right: 8,
+                                  child: GestureDetector(
+                                    onTap:
+                                        _ulasanController.text.isNotEmpty
+                                            ? () {
                                             context.read<UlasanBloc>().add(
                                               KirimUlasanEvent(
                                                 _ulasanController.text,
@@ -513,20 +481,21 @@ class _ProfilePageState extends State<ProfilePage> {
                                             );
                                           }
                                           : null,
-                                  child: Icon(
-                                    Icons.send,
-                                    size: 20,
-                                    color:
+                                    child: Icon(
+                                      Icons.send,
+                                      size: 20,
+                                      color:
                                         _ulasanController.text.isNotEmpty
                                             ? const Color(0xffFBBE55)
                                             : Colors.grey,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
-                      ),
+                      ],
                       BlocListener<LogoutBloc, LogoutState>(
                         listener: (context, state) {
                           if (state is LogoutSuccess) {
@@ -659,4 +628,6 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
   }
+
+  
 }

@@ -8,6 +8,7 @@ import 'package:pp_flutter/blocs/quiz/latSoal_state.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:pp_flutter/pages/latihan_slesai_splash.dart';
 import 'package:pp_flutter/repositories/siswa_repositori.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class QuizPage extends StatefulWidget {
   final int materiId;
@@ -22,11 +23,26 @@ class _QuizPageState extends State<QuizPage> {
   String? _selectedOptionKey; // A, B, C
   bool _isAnswerChecked = false;
 
+  final AudioPlayer _audioPlayer = AudioPlayer();
+
+  Future<void> playSound(String assetPath) async {
+    try {
+      await _audioPlayer.stop();
+      await _audioPlayer.play(AssetSource(assetPath));
+    } catch (_) {}
+  }
+
   @override
   void initState() {
     super.initState();
     _currentIndex = 0; // Reset index setiap buka halaman
     context.read<LatihanSoalBloc>().add(FetchLatihanSoal(widget.materiId));
+  }
+
+  @override
+  void dispose() {
+    _audioPlayer.dispose();
+    super.dispose();
   }
 
   @override
@@ -238,6 +254,7 @@ class _QuizPageState extends State<QuizPage> {
                                   );
 
                                   if (isCorrect) {
+                                    await playSound('audio/sound-benar.mp3');
                                     showDialog(
                                       context: context,
                                       barrierDismissible: false,
@@ -307,6 +324,7 @@ class _QuizPageState extends State<QuizPage> {
                                       });
                                     }
                                   } else {
+                                    await playSound('audio/sound-salah.mp3');
                                     await Future.delayed(
                                       const Duration(seconds: 1),
                                     );
