@@ -4,7 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/services.dart';
 import 'package:pp_flutter/blocs/follow/follow_bloc.dart';
-import 'package:pp_flutter/models/leaderboardUser';
+import 'package:pp_flutter/models/response/leaderboardUser';
 import 'package:pp_flutter/models/response/profile_response.dart';
 import 'package:pp_flutter/models/response/user_model.dart';
 import 'package:pp_flutter/pages/component/bottom_navbar.dart';

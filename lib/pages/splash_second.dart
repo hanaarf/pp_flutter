@@ -118,6 +118,7 @@ class _SplashSecondState extends State<SplashSecond> with TickerProviderStateMix
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
@@ -131,7 +132,6 @@ class _SplashSecondState extends State<SplashSecond> with TickerProviderStateMix
               ],
             ),
           ),
-          const SizedBox(height: 30),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Row(
@@ -144,7 +144,6 @@ class _SplashSecondState extends State<SplashSecond> with TickerProviderStateMix
               ],
             ),
           ),
-          const SizedBox(height: 30),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 30),
             child: Row(
@@ -157,7 +156,6 @@ class _SplashSecondState extends State<SplashSecond> with TickerProviderStateMix
               ],
             ),
           ),
-          const SizedBox(height: 30),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 50),
             child: Row(
@@ -170,9 +168,8 @@ class _SplashSecondState extends State<SplashSecond> with TickerProviderStateMix
               ],
             ),
           ),
-          const SizedBox(height: 30),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [

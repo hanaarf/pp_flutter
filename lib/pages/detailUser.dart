@@ -6,6 +6,8 @@ import 'package:pp_flutter/blocs/follow/follow_bloc.dart';
 import 'package:pp_flutter/blocs/follow/follow_event.dart';
 import 'package:pp_flutter/blocs/follow/follow_state.dart';
 import 'package:pp_flutter/models/response/user_model.dart';
+import 'package:pp_flutter/pages/component/reward.dart';
+import 'package:pp_flutter/pages/detail_reward.dart';
 import 'package:pp_flutter/pages/followPage.dart';
 import 'package:pp_flutter/repositories/follow_repository.dart';
 
@@ -103,7 +105,8 @@ class _UserDetailPageState extends State<UserDetailPage> {
                           child: Column(
                             children: [
                               Text(
-                                widget.user.nama[0].toUpperCase() + widget.user.nama.substring(1),
+                                widget.user.nama[0].toUpperCase() +
+                                    widget.user.nama.substring(1),
                                 style: GoogleFonts.quicksand(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
@@ -140,7 +143,9 @@ class _UserDetailPageState extends State<UserDetailPage> {
                                     SizedBox(width: 6),
                                     Text(
                                       'Total xp: ${widget.user.xp}',
-                                      style: TextStyle(color: Color(0xffFAAE2B)),
+                                      style: TextStyle(
+                                        color: Color(0xffFAAE2B),
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -154,23 +159,43 @@ class _UserDetailPageState extends State<UserDetailPage> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              _buildCounter(followingCount.toString(), "Mengikuti", () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => FollowPage(initialIndex: 0, userId: widget.user.id),
-                                  ),
-                                );
-                              }),
-                              Container(width: 1, height: 50, color: Colors.grey),
-                              _buildCounter(followersCount.toString(), "Pengikut", () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => FollowPage(initialIndex: 1, userId: widget.user.id),
-                                  ),
-                                );
-                              }),
+                              _buildCounter(
+                                followingCount.toString(),
+                                "Mengikuti",
+                                () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) => FollowPage(
+                                            initialIndex: 0,
+                                            userId: widget.user.id,
+                                          ),
+                                    ),
+                                  );
+                                },
+                              ),
+                              Container(
+                                width: 1,
+                                height: 50,
+                                color: Colors.grey,
+                              ),
+                              _buildCounter(
+                                followersCount.toString(),
+                                "Pengikut",
+                                () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) => FollowPage(
+                                            initialIndex: 1,
+                                            userId: widget.user.id,
+                                          ),
+                                    ),
+                                  );
+                                },
+                              ),
                             ],
                           ),
                         ),
@@ -179,26 +204,35 @@ class _UserDetailPageState extends State<UserDetailPage> {
                         BlocBuilder<FollowBloc, FollowState>(
                           builder: (context, state) {
                             bool isFollowing = false;
-                            if (state is FollowLoaded) isFollowing = state.isFollowing;
+                            if (state is FollowLoaded)
+                              isFollowing = state.isFollowing;
                             return SizedBox(
                               width: double.infinity,
                               child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: isFollowing ? Colors.grey : Colors.pinkAccent,
+                                  backgroundColor:
+                                      isFollowing
+                                          ? Colors.grey
+                                          : Colors.pinkAccent,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(24),
                                   ),
                                 ),
-                                onPressed: state is FollowLoading
-                                    ? null
-                                    : () {
-                                        if (isFollowing) {
-                                          context.read<FollowBloc>().add(UnfollowUser(widget.user.id));
-                                        } else {
-                                          context.read<FollowBloc>().add(FollowUser(widget.user.id));
-                                        }
-                                        // Tidak perlu await fetchCounts() di sini!
-                                      },
+                                onPressed:
+                                    state is FollowLoading
+                                        ? null
+                                        : () {
+                                          if (isFollowing) {
+                                            context.read<FollowBloc>().add(
+                                              UnfollowUser(widget.user.id),
+                                            );
+                                          } else {
+                                            context.read<FollowBloc>().add(
+                                              FollowUser(widget.user.id),
+                                            );
+                                          }
+                                          // Tidak perlu await fetchCounts() di sini!
+                                        },
                                 child: Text(
                                   isFollowing ? "Batal Ikuti" : "Ikuti",
                                   style: GoogleFonts.quicksand(
@@ -225,13 +259,13 @@ class _UserDetailPageState extends State<UserDetailPage> {
                           children: [
                             Icon(Icons.calendar_today, size: 16),
                             SizedBox(width: 8),
-                             Text(
-                            'Bergabung ${_formatTanggal(widget.user.createdAt)}',
-                            style: GoogleFonts.quicksand(
-                              color: Colors.grey,
-                              fontSize: 14,
+                            Text(
+                              'Bergabung ${_formatTanggal(widget.user.createdAt)}',
+                              style: GoogleFonts.quicksand(
+                                color: Colors.grey,
+                                fontSize: 14,
+                              ),
                             ),
-                          ),
                           ],
                         ),
                         const SizedBox(height: 30),
@@ -246,9 +280,24 @@ class _UserDetailPageState extends State<UserDetailPage> {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            Text(
-                              "Lihat Semua",
-                              style: GoogleFonts.quicksand(color: Colors.grey),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder:
+                                        (context) => DetailRewardPage(
+                                          xp: int.tryParse(widget.user.xp) ?? 0,
+                                        ),
+                                  ),
+                                );
+                              },
+                              child: Text(
+                                "Lihat Semua",
+                                style: GoogleFonts.quicksand(
+                                  color: Colors.grey,
+                                ),
+                              ),
                             ),
                           ],
                         ),
@@ -261,22 +310,8 @@ class _UserDetailPageState extends State<UserDetailPage> {
                             border: Border.all(color: Colors.grey.shade300),
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: Column(
-                            children: [
-                              SvgPicture.asset(
-                                'assets/profile/belum-ada-reward.svg',
-                                width: 100,
-                                height: 100,
-                              ),
-                              const SizedBox(height: 8),
-                              const Text(
-                                "Belum Ada Reward",
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ],
+                          child: buildPencapaian(
+                            int.tryParse(widget.user.xp) ?? 0,
                           ),
                         ),
                       ],
@@ -313,9 +348,18 @@ class _UserDetailPageState extends State<UserDetailPage> {
         children: [
           Text(
             value,
-            style: GoogleFonts.quicksand(fontSize: 24, fontWeight: FontWeight.bold),
+            style: GoogleFonts.quicksand(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-          Text(label, style: GoogleFonts.quicksand(fontSize: 14, fontWeight: FontWeight.w500)),
+          Text(
+            label,
+            style: GoogleFonts.quicksand(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
         ],
       ),
     );
@@ -324,10 +368,19 @@ class _UserDetailPageState extends State<UserDetailPage> {
   String _formatTanggal(String tanggal) {
     final DateTime dt = DateTime.parse(tanggal);
     const bulan = [
-      'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-      'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+      'Januari',
+      'Februari',
+      'Maret',
+      'April',
+      'Mei',
+      'Juni',
+      'Juli',
+      'Agustus',
+      'September',
+      'Oktober',
+      'November',
+      'Desember',
     ];
     return '${bulan[dt.month - 1]} ${dt.year}';
   }
-
 }

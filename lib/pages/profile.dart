@@ -11,6 +11,8 @@ import 'package:pp_flutter/blocs/ulasan/ulasan_bloc.dart';
 import 'package:pp_flutter/blocs/ulasan/ulasan_event.dart';
 import 'package:pp_flutter/blocs/ulasan/ulasan_state.dart';
 import 'package:pp_flutter/models/response/profile_response.dart';
+import 'package:pp_flutter/pages/component/reward.dart';
+import 'package:pp_flutter/pages/detail_reward.dart';
 import 'package:pp_flutter/pages/followPage.dart';
 import 'package:pp_flutter/pages/signin.dart';
 import 'package:pp_flutter/pages/ubah_menit.dart';
@@ -121,41 +123,48 @@ class _ProfilePageState extends State<ProfilePage> {
                 shrinkWrap: true,
                 mainAxisSpacing: 16,
                 crossAxisSpacing: 16,
-                children: avatars.map((path) {
-                  return GestureDetector(
-                    onTap: () async {
-                      final avatarName = path.split('/').last;
-                      try {
-                        await AuthRepository().updateAvatar(avatarName);
-                        if (!mounted) return;
-                        setState(() {
-                          selectedAvatar = path;
-                        });
-                        _showCustomSnackBar(context, "Avatar berhasil diperbarui");
-                        if (mounted) Navigator.pop(context);
-                      } catch (e) {
-                        if (mounted) {
-                          _showCustomSnackBar(
-                            context,
-                            "Gagal update avatar: $e",
-                            isSuccess: false,
-                          );
-                        }
-                      }
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: selectedAvatar == path ? Colors.deepPurple : Colors.transparent,
-                          width: 2,
+                children:
+                    avatars.map((path) {
+                      return GestureDetector(
+                        onTap: () async {
+                          final avatarName = path.split('/').last;
+                          try {
+                            await AuthRepository().updateAvatar(avatarName);
+                            if (!mounted) return;
+                            setState(() {
+                              selectedAvatar = path;
+                            });
+                            _showCustomSnackBar(
+                              context,
+                              "Avatar berhasil diperbarui",
+                            );
+                            if (mounted) Navigator.pop(context);
+                          } catch (e) {
+                            if (mounted) {
+                              _showCustomSnackBar(
+                                context,
+                                "Gagal update avatar: $e",
+                                isSuccess: false,
+                              );
+                            }
+                          }
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color:
+                                  selectedAvatar == path
+                                      ? Colors.deepPurple
+                                      : Colors.transparent,
+                              width: 2,
+                            ),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          padding: const EdgeInsets.all(4),
+                          child: Image.asset(path),
                         ),
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      padding: const EdgeInsets.all(4),
-                      child: Image.asset(path),
-                    ),
-                  );
-                }).toList(),
+                      );
+                    }).toList(),
               ),
             ],
           ),
@@ -180,10 +189,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             const SizedBox(width: 12),
             Expanded(
-              child: Text(
-                message,
-                style: const TextStyle(color: Colors.white),
-              ),
+              child: Text(message, style: const TextStyle(color: Colors.white)),
             ),
           ],
         ),
@@ -265,7 +271,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           ],
                         ),
                       ),
-                       SizedBox(height: 10,),
+                      SizedBox(height: 10),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10.0),
                         child: Row(
@@ -276,11 +282,18 @@ class _ProfilePageState extends State<ProfilePage> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => FollowPage(initialIndex: 0, userId: profileData?.id ?? 0),
+                                    builder:
+                                        (context) => FollowPage(
+                                          initialIndex: 0,
+                                          userId: profileData?.id ?? 0,
+                                        ),
                                   ),
                                 ).then((_) => fetchCounts());
                               },
-                              child: buildCounter(followingCount.toString(), "Mengikuti"),
+                              child: buildCounter(
+                                followingCount.toString(),
+                                "Mengikuti",
+                              ),
                             ),
                             Container(width: 1, height: 50, color: Colors.grey),
                             GestureDetector(
@@ -288,11 +301,18 @@ class _ProfilePageState extends State<ProfilePage> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => FollowPage(initialIndex: 1, userId: profileData?.id ?? 0),
+                                    builder:
+                                        (context) => FollowPage(
+                                          initialIndex: 1,
+                                          userId: profileData?.id ?? 0,
+                                        ),
                                   ),
-                                ).then((_) => fetchCounts()); 
+                                ).then((_) => fetchCounts());
                               },
-                              child: buildCounter(followersCount.toString(), "Pengikut"),
+                              child: buildCounter(
+                                followersCount.toString(),
+                                "Pengikut",
+                              ),
                             ),
                           ],
                         ),
@@ -326,27 +346,50 @@ class _ProfilePageState extends State<ProfilePage> {
                           ],
                         ),
                       ),
-                       const SizedBox(height: 30),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Row(
+                      const SizedBox(height: 30),
+                        // Pencapaian
+                        Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                             SvgPicture.asset(
-                                'assets/profile/xp200.svg',
-                                width: 67,
+                            Text(
+                              "Pencapaian",
+                              style: GoogleFonts.montserrat(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
                               ),
-                             SvgPicture.asset(
-                                'assets/profile/xp400.svg',
-                                width: 67,
+                            ),
+                             GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder:
+                                        (context) => DetailRewardPage(
+                                          xp:(profileData?.xpTotal ?? 0),
+                                        ),
+                                  ),
+                                );
+                              },
+                              child: Text(
+                                "Lihat Semua",
+                                style: GoogleFonts.quicksand(
+                                  color: Colors.grey,
+                                ),
                               ),
-                             SvgPicture.asset(
-                                'assets/profile/xp600.svg',
-                                width: 67,
-                              ),
+                            ),
                           ],
                         ),
-                      ),
+                        const SizedBox(height: 16),
+                        // Box Pencapaian
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey.shade300),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: buildPencapaian(profileData?.xpTotal?? 0)
+                        ),
                       const SizedBox(height: 30),
                       Text(
                         "Ubah Profile",
@@ -447,7 +490,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                         ],
                       ),
-                      const Divider(height: 30),
+                      const Divider(height: 40),
                       if (!sudahUlasan) ...[
                         Text(
                           "Ulasan",
@@ -458,12 +501,20 @@ class _ProfilePageState extends State<ProfilePage> {
                           listener: (context, state) {
                             if (state is UlasanSuccess) {
                               _ulasanController.clear();
-                              _showCustomSnackBar(context, "Ulasan berhasil dikirim!");
+                              _showCustomSnackBar(
+                                context,
+                                "Ulasan berhasil dikirim!",
+                              );
                               setState(() {
-                                sudahUlasan = true; // Form hilang setelah sukses kirim
+                                sudahUlasan =
+                                    true; // Form hilang setelah sukses kirim
                               });
                             } else if (state is UlasanFailure) {
-                              _showCustomSnackBar(context, "Gagal mengirim: ${state.message}", isSuccess: false);
+                              _showCustomSnackBar(
+                                context,
+                                "Gagal mengirim: ${state.message}",
+                                isSuccess: false,
+                              );
                             }
                           },
                           child: Container(
@@ -512,20 +563,20 @@ class _ProfilePageState extends State<ProfilePage> {
                                     onTap:
                                         _ulasanController.text.isNotEmpty
                                             ? () {
-                                            context.read<UlasanBloc>().add(
-                                              KirimUlasanEvent(
-                                                _ulasanController.text,
-                                              ),
-                                            );
-                                          }
-                                          : null,
+                                              context.read<UlasanBloc>().add(
+                                                KirimUlasanEvent(
+                                                  _ulasanController.text,
+                                                ),
+                                              );
+                                            }
+                                            : null,
                                     child: Icon(
                                       Icons.send,
                                       size: 20,
                                       color:
-                                        _ulasanController.text.isNotEmpty
-                                            ? const Color(0xffFBBE55)
-                                            : Colors.grey,
+                                          _ulasanController.text.isNotEmpty
+                                              ? const Color(0xffFBBE55)
+                                              : Colors.grey,
                                     ),
                                   ),
                                 ),
@@ -556,9 +607,13 @@ class _ProfilePageState extends State<ProfilePage> {
                           padding: const EdgeInsets.only(top: 24.0),
                           child: SizedBox(
                             width: double.infinity,
-                            height: 40, 
+                            height: 40,
                             child: ElevatedButton.icon(
-                              icon: const Icon(Icons.logout, color: Colors.black87, size: 16),
+                              icon: const Icon(
+                                Icons.logout,
+                                color: Colors.black87,
+                                size: 16,
+                              ),
                               label: Text(
                                 "Logout",
                                 style: GoogleFonts.montserrat(
@@ -568,7 +623,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 ),
                               ),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xffFBBE55), 
+                                backgroundColor: const Color(0xffFBBE55),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20),
                                 ),
@@ -598,11 +653,14 @@ class _ProfilePageState extends State<ProfilePage> {
                                       actions: [
                                         TextButton(
                                           child: const Text("Batal"),
-                                          onPressed: () => Navigator.of(context).pop(),
+                                          onPressed:
+                                              () => Navigator.of(context).pop(),
                                         ),
                                         ElevatedButton(
                                           style: ElevatedButton.styleFrom(
-                                            backgroundColor: const Color(0xffFBBE55),
+                                            backgroundColor: const Color(
+                                              0xffFBBE55,
+                                            ),
                                           ),
                                           onPressed: () {
                                             Navigator.of(context).pop();
@@ -668,19 +726,23 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget buildCounter(String value, String label) {
-  return Column(
-    children: [
-      Text(
-        value,
-        style: GoogleFonts.quicksand(fontSize: 24, fontWeight: FontWeight.bold),
-      ),
-      Text(
-        label,
-        style: GoogleFonts.quicksand(fontSize: 14, fontWeight: FontWeight.w500),
-      ),
-    ],
-  );
-}
-
-  
+    return Column(
+      children: [
+        Text(
+          value,
+          style: GoogleFonts.quicksand(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        Text(
+          label,
+          style: GoogleFonts.quicksand(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
+    );
+  }
 }

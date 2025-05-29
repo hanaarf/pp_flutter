@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:pp_flutter/models/response/latihan_materi_model.dart';
-import 'package:pp_flutter/models/leaderboardUser';
+import 'package:pp_flutter/models/response/leaderboardUser';
 import 'package:pp_flutter/models/response/quis_model.dart';
 import 'package:pp_flutter/models/response/user_model.dart';
 import '../services/variable.dart';

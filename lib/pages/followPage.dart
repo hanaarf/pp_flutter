@@ -46,7 +46,7 @@ class _FollowPageState extends State<FollowPage> with SingleTickerProviderStateM
         ),
         bottom: TabBar(
           controller: _tabController,
-          indicatorColor: Colors.black,
+          indicatorColor: Color(0xff00D4CD),
           indicatorWeight: 2,
           labelColor: Colors.black,
           unselectedLabelColor: Colors.grey,

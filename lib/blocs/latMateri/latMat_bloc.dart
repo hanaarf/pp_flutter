@@ -1,5 +1,4 @@
 // ignore: file_names
-// ignore: file_names
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pp_flutter/blocs/latMateri/latMat_event.dart';
 import 'package:pp_flutter/blocs/latMateri/latMat_state.dart';
