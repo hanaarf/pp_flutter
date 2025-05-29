@@ -5,7 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pp_flutter/blocs/latMateri/latMat_bloc.dart';
 import 'package:pp_flutter/blocs/latMateri/latMat_event.dart';
-import 'package:pp_flutter/models/materi_model.dart';
+import 'package:pp_flutter/models/response/materi_model.dart';
 import 'package:pp_flutter/pages/component/materi_list.dart';
 import 'package:pp_flutter/pages/latihan_materi.dart';
 import 'package:pp_flutter/pages/layar_belajar.dart';

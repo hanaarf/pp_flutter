@@ -1,4 +1,4 @@
-import 'package:pp_flutter/models/materi_model.dart';
+import 'package:pp_flutter/models/response/materi_model.dart';
 
 abstract class RekomendasiState {}
 class RekomendasiInitial extends RekomendasiState {}

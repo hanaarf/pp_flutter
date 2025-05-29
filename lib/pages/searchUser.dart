@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pp_flutter/blocs/follow/follow_bloc.dart';
-import 'package:pp_flutter/models/user_model.dart';
+import 'package:pp_flutter/models/response/user_model.dart';
 import 'package:pp_flutter/pages/detailUser.dart';
 import 'package:pp_flutter/repositories/follow_repository.dart';
 import 'package:pp_flutter/repositories/siswa_repositori.dart';

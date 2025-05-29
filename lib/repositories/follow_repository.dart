@@ -3,6 +3,9 @@ import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import '../services/variable.dart';
+import '../models/response/follow_list_response.dart';
+import '../models/response/follow_status_response.dart';
+import '../models/request/follow_request.dart';
 
 class FollowRepository {
   final _storage = FlutterSecureStorage();
@@ -14,7 +17,7 @@ class FollowRepository {
       headers: {'Authorization': 'Bearer $token'},
     );
     final json = jsonDecode(response.body);
-    return json['followed'] == true;
+    return FollowStatusResponse.fromJson(json).followed;
   }
 
   Future<void> follow(int userId) async {
@@ -22,7 +25,7 @@ class FollowRepository {
     final response = await http.post(
       Uri.parse('$baseUrl/follow'),
       headers: {'Authorization': 'Bearer $token', 'Content-Type': 'application/json'},
-      body: jsonEncode({'following_id': userId}),
+      body: jsonEncode(FollowRequest(userId).toJson()),
     );
     if (response.statusCode != 200) throw Exception('Gagal follow');
   }
@@ -32,12 +35,12 @@ class FollowRepository {
     final response = await http.post(
       Uri.parse('$baseUrl/unfollow'),
       headers: {'Authorization': 'Bearer $token', 'Content-Type': 'application/json'},
-      body: jsonEncode({'following_id': userId}),
+      body: jsonEncode(FollowRequest(userId).toJson()),
     );
     if (response.statusCode != 200) throw Exception('Gagal unfollow');
   }
 
-  Future<List<dynamic>> getFollowers(int userId) async {
+  Future<FollowListResponse> getFollowers(int userId) async {
     final token = await _storage.read(key: 'token');
     final response = await http.get(
       Uri.parse('$baseUrl/followers/$userId'),
@@ -45,13 +48,13 @@ class FollowRepository {
     );
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      return data['data'];
+      return FollowListResponse.fromJson(data);
     } else {
       throw Exception('Failed to load followers');
     }
   }
 
-  Future<List<dynamic>> getFollowing(int userId) async {
+  Future<FollowListResponse> getFollowing(int userId) async {
     final token = await _storage.read(key: 'token');
     final response = await http.get(
       Uri.parse('$baseUrl/following/$userId'),
@@ -59,37 +62,19 @@ class FollowRepository {
     );
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      return data['data'];
+      return FollowListResponse.fromJson(data);
     } else {
       throw Exception('Failed to load following');
     }
   }
 
   Future<int> getFollowersCount(int userId) async {
-    final token = await _storage.read(key: 'token');
-    final response = await http.get(
-      Uri.parse('$baseUrl/followers/$userId'),
-      headers: {'Authorization': 'Bearer $token'},
-    );
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      return data['count'] ?? 0;
-    } else {
-      throw Exception('Failed to load followers count');
-    }
+    final res = await getFollowers(userId);
+    return res.count;
   }
 
   Future<int> getFollowingCount(int userId) async {
-    final token = await _storage.read(key: 'token');
-    final response = await http.get(
-      Uri.parse('$baseUrl/following/$userId'),
-      headers: {'Authorization': 'Bearer $token'},
-    );
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      return data['count'] ?? 0;
-    } else {
-      throw Exception('Failed to load following count');
-    }
+    final res = await getFollowing(userId);
+    return res.count;
   }
 }

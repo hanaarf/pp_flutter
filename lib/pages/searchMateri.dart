@@ -3,7 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pp_flutter/blocs/detailMateri/detail_bloc.dart';
-import 'package:pp_flutter/models/materi_model.dart';
+import 'package:pp_flutter/models/response/materi_model.dart';
 import 'package:pp_flutter/pages/nonton_materi.dart';
 import 'package:pp_flutter/repositories/materi_repository.dart';
 

@@ -4,12 +4,13 @@ import 'package:pp_flutter/models/response/profile_response.dart';
 import 'package:pp_flutter/repositories/follow_repository.dart';
 import 'package:pp_flutter/pages/detailUser.dart';
 import 'package:pp_flutter/pages/component/bottom_navbar.dart';
-import 'package:pp_flutter/models/user_model.dart';
+import 'package:pp_flutter/models/response/user_model.dart';
 import 'package:pp_flutter/repositories/auth_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pp_flutter/blocs/follow/follow_bloc.dart';
 import 'package:pp_flutter/blocs/follow/follow_event.dart';
 import 'package:pp_flutter/blocs/follow/follow_state.dart';
+import 'package:pp_flutter/models/response/user_follow_response.dart'; // Tambahkan ini
 
 // Halaman Mengikuti
 class MengikutiPage extends StatefulWidget {
@@ -21,7 +22,7 @@ class MengikutiPage extends StatefulWidget {
 }
 
 class _MengikutiPageState extends State<MengikutiPage> {
-  List<dynamic> following = [];
+  List<UserFollow> following = []; 
   bool isLoading = true;
   final FollowRepository _repo = FollowRepository();
   ProfileResponse? profile;
@@ -44,10 +45,10 @@ class _MengikutiPageState extends State<MengikutiPage> {
 
   Future<void> fetchFollowing() async {
     try {
-      final data = await _repo.getFollowing(widget.userId);
+      final response = await _repo.getFollowing(widget.userId);
       if (!mounted) return;
       setState(() {
-        following = data;
+        following = response.data; // Ambil dari .data
         isLoading = false;
       });
     } catch (e) {
@@ -82,11 +83,11 @@ class _MengikutiPageState extends State<MengikutiPage> {
               itemBuilder: (context, index) {
                 final user = following[index];
                 return BlocProvider(
-                  create: (_) => FollowBloc(FollowRepository())..add(CheckFollowStatus(user['id'])),
+                  create: (_) => FollowBloc(FollowRepository())..add(CheckFollowStatus(user.id)),
                   child: Builder(
                     builder: (context) => GestureDetector(
                       onTap: () {
-                        if (profile != null && user['id'] == profile!.id) {
+                        if (profile != null && user.id == profile!.id) {
                           Navigator.of(context).popUntil((route) => route.isFirst);
                           Navigator.pushReplacement(
                             context,
@@ -96,12 +97,12 @@ class _MengikutiPageState extends State<MengikutiPage> {
                           );
                         } else {
                           final userModel = UserModel(
-                            id: user['id'],
-                            nama: user['name'],
-                            xp: (user['xp'] ?? '0').toString(),
-                            img: getAvatarPath(user['image']),
-                            jenjang: user['jenjang'] ?? '',
-                            kelas: user['kelas'] ?? '',
+                            id: user.id,
+                            nama: user.name,
+                            xp: (user.xp ?? '0').toString(),
+                            img: getAvatarPath(user.image),
+                            jenjang: user.jenjang ?? '',
+                            kelas: user.kelas ?? '',
                             createdAt: DateTime.now().toIso8601String(),
                           );
                           Navigator.push(
@@ -126,12 +127,12 @@ class _MengikutiPageState extends State<MengikutiPage> {
                         child: Row(
                           children: [
                             CircleAvatar(
-                              backgroundImage: AssetImage(getAvatarPath(user['image'])),
+                              backgroundImage: AssetImage(getAvatarPath(user.image)),
                             ),
                             const SizedBox(width: 12),
                             Expanded(
                               child: Text(
-                                user['name'],
+                                user.name,
                                 style: GoogleFonts.quicksand(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w500,
@@ -147,9 +148,9 @@ class _MengikutiPageState extends State<MengikutiPage> {
                                       ? null
                                       : () {
                                           if (isFollowing) {
-                                            context.read<FollowBloc>().add(UnfollowUser(user['id']));
+                                            context.read<FollowBloc>().add(UnfollowUser(user.id));
                                           } else {
-                                            context.read<FollowBloc>().add(FollowUser(user['id']));
+                                            context.read<FollowBloc>().add(FollowUser(user.id));
                                           }
                                         },
                                   style: ElevatedButton.styleFrom(

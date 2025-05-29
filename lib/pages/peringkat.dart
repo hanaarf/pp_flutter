@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:pp_flutter/blocs/follow/follow_bloc.dart';
 import 'package:pp_flutter/models/leaderboardUser';
 import 'package:pp_flutter/models/response/profile_response.dart';
-import 'package:pp_flutter/models/user_model.dart';
+import 'package:pp_flutter/models/response/user_model.dart';
 import 'package:pp_flutter/pages/component/bottom_navbar.dart';
 import 'package:pp_flutter/pages/detailUser.dart';
 import 'package:pp_flutter/pages/searchUser.dart';

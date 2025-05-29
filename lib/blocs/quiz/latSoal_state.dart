@@ -1,4 +1,4 @@
-import 'package:pp_flutter/models/quis_model.dart';
+import 'package:pp_flutter/models/response/quis_model.dart';
 
 abstract class LatihanSoalState {}
 

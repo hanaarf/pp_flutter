@@ -3,7 +3,7 @@ class MateriModel {
   final String judul;
   final String subjudul;
   final String deskripsi;
-  final String videoUrl; // <- tambahkan ini
+  final String videoUrl; 
 
   MateriModel({
     required this.id,

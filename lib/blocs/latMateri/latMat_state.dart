@@ -1,4 +1,4 @@
-import 'package:pp_flutter/models/latihan_materi_model.dart';
+import 'package:pp_flutter/models/response/latihan_materi_model.dart';
 
 abstract class LatihanMateriState {}
 
