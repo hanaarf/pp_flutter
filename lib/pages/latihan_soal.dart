@@ -9,6 +9,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:pp_flutter/pages/latihan_slesai_splash.dart';
 import 'package:pp_flutter/repositories/siswa_repositori.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:pp_flutter/repositories/auth_repository.dart';
 
 class QuizPage extends StatefulWidget {
   final int materiId;
@@ -20,10 +21,13 @@ class QuizPage extends StatefulWidget {
 
 class _QuizPageState extends State<QuizPage> {
   int _currentIndex = 0;
-  String? _selectedOptionKey; 
+  String? _selectedOptionKey;
   bool _isAnswerChecked = false;
 
   final AudioPlayer _audioPlayer = AudioPlayer();
+
+  // Tambahkan variabel untuk menyimpan XP sebelum latihan
+  int xpSebelum = 0;
 
   Future<void> playSound(String assetPath) async {
     try {
@@ -37,6 +41,12 @@ class _QuizPageState extends State<QuizPage> {
     super.initState();
     _currentIndex = 0; // Reset index setiap buka halaman
     context.read<LatihanSoalBloc>().add(FetchLatihanSoal(widget.materiId));
+    fetchXpSebelum();
+  }
+
+  Future<void> fetchXpSebelum() async {
+    final profile = await AuthRepository().getProfile();
+    xpSebelum = profile.xpTotal ?? 0;
   }
 
   @override
@@ -93,7 +103,7 @@ class _QuizPageState extends State<QuizPage> {
                 Future.microtask(() {
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (_) => LatihanSelesaiSplash()),
+                    MaterialPageRoute(builder: (_) => LatihanSelesaiSplash(xpSebelum: xpSebelum,)),
                   );
                 });
                 return const SizedBox();

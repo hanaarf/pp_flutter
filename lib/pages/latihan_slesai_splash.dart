@@ -6,10 +6,13 @@ import 'package:pp_flutter/pages/latihan_materi.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pp_flutter/blocs/latMateri/latMat_bloc.dart';
 import 'package:pp_flutter/blocs/latMateri/latMat_event.dart';
+import 'package:pp_flutter/pages/reward_splash.dart';
 import 'package:pp_flutter/repositories/siswa_repositori.dart';
+import 'package:pp_flutter/repositories/auth_repository.dart';
 
 class LatihanSelesaiSplash extends StatefulWidget {
-  const LatihanSelesaiSplash({Key? key}) : super(key: key);
+  final int xpSebelum;
+  const LatihanSelesaiSplash({Key? key, required this.xpSebelum}) : super(key: key);
 
   @override
   State<LatihanSelesaiSplash> createState() => _LatihanSelesaiSplashState();
@@ -20,16 +23,39 @@ class _LatihanSelesaiSplashState extends State<LatihanSelesaiSplash> {
   void initState() {
     super.initState();
     Timer(const Duration(seconds: 3), () {
+      handleAfterLatihan(context);
+    });
+  }
+
+  Future<void> handleAfterLatihan(BuildContext context) async {
+    final profile = await AuthRepository().getProfile();
+    int xpSesudah = profile.xpTotal ?? 0;
+    final milestones = [200, 400, 600];
+    int? streakMilestone;
+    for (final m in milestones) {
+      if (widget.xpSebelum < m && xpSesudah >= m) {
+        streakMilestone = m;
+        break;
+      }
+    }
+    if (streakMilestone != null) {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => BlocProvider(
+          builder: (_) => RewardSplash(xp: streakMilestone!),
+        ),
+      );
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => BlocProvider(
             create: (_) => LatihanMateriBloc(SiswaRepositori())..add(FetchLatihanMateri()),
             child: LatihanMateriPage(),
           ),
         ),
       );
-    });
+    }
   }
 
   @override
