@@ -16,11 +16,11 @@ class UserFollow {
   });
 
   factory UserFollow.fromJson(Map<String, dynamic> json) => UserFollow(
-    id: json['id'],
-    name: json['name'],
-    image: json['image'],
-    jenjang: json['jenjang'],
-    kelas: json['kelas'],
-    xp: json['xp'],
-  );
+        id: json['id'] is int ? json['id'] : int.tryParse(json['id'].toString()) ?? 0,
+        name: json['name'] ?? '',
+        image: json['image'],
+        jenjang: json['jenjang'],
+        kelas: json['kelas'],
+        xp: json['xp'] is int ? json['xp'] : int.tryParse(json['xp'].toString()),
+      );
 }

@@ -6,8 +6,10 @@ class FollowListResponse {
 
   FollowListResponse({required this.count, required this.data});
 
-  factory FollowListResponse.fromJson(Map<String, dynamic> json) => FollowListResponse(
-    count: json['count'] ?? 0,
-    data: (json['data'] as List).map((e) => UserFollow.fromJson(e)).toList(),
-  );
+  factory FollowListResponse.fromJson(Map<String, dynamic> json) =>
+      FollowListResponse(
+        count: json['count'] ?? 0,
+        data:
+            (json['data'] as List).map((e) => UserFollow.fromJson(e)).toList(),
+      );
 }

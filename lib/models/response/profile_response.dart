@@ -6,7 +6,7 @@ class ProfileResponse {
   final String kelas;
   final int belajarMenitPerHari;
   final int xpTotal; 
-   final String image;
+  final String image;
 
   ProfileResponse({
     required this.id,
@@ -21,13 +21,17 @@ class ProfileResponse {
 
   factory ProfileResponse.fromJson(Map<String, dynamic> json) {
     return ProfileResponse(
-      id: json['id'] ?? 0,
+      id: json['id'] is int ? json['id'] : int.tryParse(json['id'].toString()) ?? 0,
       name: json['name'] ?? '',
       email: json['email'] ?? '',
       jenjang: json['jenjang'] ?? '',
       kelas: json['kelas'] ?? '',
-      belajarMenitPerHari: json['belajar_menit_per_hari'] ?? 0,
-      xpTotal: json['xpTotal'] ?? 0, 
+      belajarMenitPerHari: json['belajar_menit_per_hari'] is int
+          ? json['belajar_menit_per_hari']
+          : int.tryParse(json['belajar_menit_per_hari'].toString()) ?? 0,
+      xpTotal: json['xpTotal'] is int
+          ? json['xpTotal']
+          : int.tryParse(json['xpTotal'].toString()) ?? 0,
       image: json['image'] ?? 'avatar.png',
     );
   }

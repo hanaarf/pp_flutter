@@ -21,13 +21,13 @@ class LatihanSoalModel {
 
   factory LatihanSoalModel.fromJson(Map<String, dynamic> json) {
     return LatihanSoalModel(
-      id: json['id'],
-      pertanyaan: json['pertanyaan'],
-      opsiA: json['opsi_a'],
-      opsiB: json['opsi_b'],
-      opsiC: json['opsi_c'],
-      jawaban: json['jawaban'],
-      xp: json['xp'],
+      id: json['id'] is int ? json['id'] : int.tryParse(json['id'].toString()) ?? 0,
+      pertanyaan: json['pertanyaan'] ?? '',
+      opsiA: json['opsi_a'] ?? '',
+      opsiB: json['opsi_b'] ?? '',
+      opsiC: json['opsi_c'] ?? '',
+      jawaban: json['jawaban'] ?? '',
+      xp: json['xp'] is int ? json['xp'] : int.tryParse(json['xp'].toString()) ?? 0,
       sudahDijawab: json['sudah_dijawab'] ?? false,
     );
   }

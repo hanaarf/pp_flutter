@@ -139,37 +139,39 @@ class _MengikutiPageState extends State<MengikutiPage> {
                                 ),
                               ),
                             ),
-                            BlocBuilder<FollowBloc, FollowState>(
-                              builder: (context, state) {
-                                bool isFollowing = false;
-                                if (state is FollowLoaded) isFollowing = state.isFollowing;
-                                return ElevatedButton(
-                                  onPressed: state is FollowLoading
-                                      ? null
-                                      : () {
-                                          if (isFollowing) {
-                                            context.read<FollowBloc>().add(UnfollowUser(user.id));
-                                          } else {
-                                            context.read<FollowBloc>().add(FollowUser(user.id));
-                                          }
-                                        },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: isFollowing ? Colors.grey : Colors.pinkAccent,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20),
+                            // Tambahkan pengecekan ini:
+                            if (profile == null || user.id != profile!.id)
+                              BlocBuilder<FollowBloc, FollowState>(
+                                builder: (context, state) {
+                                  bool isFollowing = false;
+                                  if (state is FollowLoaded) isFollowing = state.isFollowing;
+                                  return ElevatedButton(
+                                    onPressed: state is FollowLoading
+                                        ? null
+                                        : () {
+                                            if (isFollowing) {
+                                              context.read<FollowBloc>().add(UnfollowUser(user.id));
+                                            } else {
+                                              context.read<FollowBloc>().add(FollowUser(user.id));
+                                            }
+                                          },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: isFollowing ? Colors.grey : Colors.pinkAccent,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
                                     ),
-                                    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
-                                  ),
-                                  child: Text(
-                                    isFollowing ? "Batal Ikuti" : "Ikuti",
-                                    style: GoogleFonts.quicksand(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w600,
+                                    child: Text(
+                                      isFollowing ? "Batal Ikuti" : "Ikuti",
+                                      style: GoogleFonts.quicksand(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w600,
+                                      ),
                                     ),
-                                  ),
-                                );
-                              },
-                            ),
+                                  );
+                                },
+                              ),
                           ],
                         ),
                       ),

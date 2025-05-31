@@ -22,13 +22,13 @@ class LatihanMateriModel {
 
   factory LatihanMateriModel.fromJson(Map<String, dynamic> json) {
     return LatihanMateriModel(
-      id: json['id'] ?? 0,
+      id: json['id'] is int ? json['id'] : int.tryParse(json['id'].toString()) ?? 0,
       judul: json['judul'] ?? '',
       subjudul: json['subjudul'] ?? '',
       deskripsi: json['deskripsi'] ?? '',
       youtubeUrl: json['youtube_url'] ?? '',
-      jumlahSoal: json['jumlah_soal'] ?? 0,
-      jumlahJawab: json['jumlah_jawab'] ?? 0,
+      jumlahSoal: json['jumlah_soal'] is int ? json['jumlah_soal'] : int.tryParse(json['jumlah_soal'].toString()) ?? 0,
+      jumlahJawab: json['jumlah_jawab'] is int ? json['jumlah_jawab'] : int.tryParse(json['jumlah_jawab'].toString()) ?? 0,
       statusLatihan: json['status_latihan'] ?? 'belum',
     );
   }

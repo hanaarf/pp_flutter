@@ -25,17 +25,16 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  static DateTime? _globalStartTime;
-  static bool _globalSudahPopup = false;
+  DateTime? _globalStartTime;
+  bool _globalSudahPopup = false;
 
   bool isLoadingProfile = true;
   String userName = '';
   String jenjang = 'sd';
 
-  // Timer belajar
   Timer? _timer;
   int _detikSisa = 0;
-  int _belajarMenitPerHari = 2; // Default, nanti diisi dari profile
+  int _belajarMenitPerHari = 15; 
 
   @override
   void initState() {
@@ -52,12 +51,10 @@ class _HomePageState extends State<HomePage> {
         userName = profile.name;
         jenjang = profile.jenjang.toLowerCase();
         isLoadingProfile = false;
-        _belajarMenitPerHari = profile.belajarMenitPerHari > 0 ? profile.belajarMenitPerHari : 2;
-        // Set global start time hanya jika belum ada
-        if (_globalStartTime == null) {
-          _globalStartTime = DateTime.now();
-          _globalSudahPopup = false;
-        }
+        _belajarMenitPerHari = profile.belajarMenitPerHari > 0 ? profile.belajarMenitPerHari : 15;
+        // Selalu reset timer setiap kali user masuk HomePage atau login
+        _globalStartTime = DateTime.now();
+        _globalSudahPopup = false;
       });
       _startBelajarTimer();
     } catch (_) {

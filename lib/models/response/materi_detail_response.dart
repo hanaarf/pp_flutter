@@ -15,11 +15,11 @@ class MateriDetailResponse {
 
   factory MateriDetailResponse.fromJson(Map<String, dynamic> json) {
     return MateriDetailResponse(
-      id: json['id'],
-      judul: json['judul'],
-      deskripsi: json['deskripsi'],
-      youtubeUrl: json['youtube_url'],
-      createdAt: json['created_at'],
+      id: json['id'] is int ? json['id'] : int.tryParse(json['id'].toString()) ?? 0,
+      judul: json['judul'] ?? '',
+      deskripsi: json['deskripsi'] ?? '',
+      youtubeUrl: json['youtube_url'] ?? '',
+      createdAt: json['created_at'] ?? '',
     );
   }
 }

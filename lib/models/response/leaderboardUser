@@ -21,10 +21,10 @@ class LeaderboardUser {
 
   factory LeaderboardUser.fromJson(Map<String, dynamic> json) {
     return LeaderboardUser(
-      id: json['id'],
-      rank: json['rank'],
-      name: json['name'],
-      xp: json['xp'],
+      id: json['id'] is int ? json['id'] : int.tryParse(json['id'].toString()) ?? 0,
+      rank: json['rank'] is int ? json['rank'] : int.tryParse(json['rank'].toString()) ?? 0,
+      name: json['name'] ?? '',
+      xp: json['xp'] is int ? json['xp'] : int.tryParse(json['xp'].toString()) ?? 0,
       avatar: json['avatar'] ?? 'avatar.png',
       jenjang: json['jenjang'] ?? '-',
       kelas: json['kelas'] ?? '-',
