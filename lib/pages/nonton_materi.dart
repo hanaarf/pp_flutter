@@ -89,7 +89,7 @@ class _DetailMateriPageState extends State<DetailMateriPage> {
                             padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
                             child: Text(
                                '${materi.judul} : ${materi.subjudul}',
-                              style: GoogleFonts.montserrat(fontSize: 18, fontWeight: FontWeight.bold),
+                              style: GoogleFonts.montserrat(fontSize: 20, fontWeight: FontWeight.bold),
                             ),
                           ),
                           const Divider(thickness: 1, height: 1),
@@ -105,7 +105,7 @@ class _DetailMateriPageState extends State<DetailMateriPage> {
                                       const SizedBox(width: 4),
                                       Text(
                                         materi.jenjang ?? '-',
-                                        style: GoogleFonts.quicksand(fontWeight: FontWeight.bold),
+                                        style: GoogleFonts.montserrat(fontWeight: FontWeight.bold),
                                       ),
                                     ],
                                   ),
@@ -115,7 +115,7 @@ class _DetailMateriPageState extends State<DetailMateriPage> {
                                       const SizedBox(width: 4),
                                       Text(
                                         materi.kelas ?? '-',
-                                        style: GoogleFonts.quicksand(fontWeight: FontWeight.bold),
+                                        style: GoogleFonts.montserrat(fontWeight: FontWeight.bold),
                                       ),
                                     ],
                                   ),
@@ -127,7 +127,7 @@ class _DetailMateriPageState extends State<DetailMateriPage> {
                           ),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
-                            child: Text("Deskripsi", style: GoogleFonts.quicksand(fontWeight: FontWeight.bold)),
+                            child: Text("Deskripsi", style: GoogleFonts.montserrat(fontWeight: FontWeight.bold)),
                           ),
                           Container(
                             margin: const EdgeInsets.only(left: 25),
@@ -153,7 +153,7 @@ class _DetailMateriPageState extends State<DetailMateriPage> {
                                   TextSpan(
                                     text: "Putar",
                                     style: TextStyle(
-                                      fontSize: 16,
+                                      fontSize: 20,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.teal,
                                     ),
@@ -161,7 +161,7 @@ class _DetailMateriPageState extends State<DetailMateriPage> {
                                   TextSpan(
                                     text: "Pintar",
                                     style: TextStyle(
-                                      fontSize: 16,
+                                      fontSize: 20,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.orange,
                                     ),
@@ -178,13 +178,14 @@ class _DetailMateriPageState extends State<DetailMateriPage> {
                               children: [
                                 const Text(
                                   "Akses materi belajar PutarPintar disini!",
-                                  style: TextStyle(fontSize: 14),
+                                  style: TextStyle(fontSize: 16),
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
                                   materi.youtubeUrl,
                                   style: const TextStyle(
                                     color: Color(0xff0000EE),
+                                    fontSize: 15,
                                     decoration: TextDecoration.underline,
                                   ),
                                 ),

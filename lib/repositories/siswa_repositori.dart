@@ -11,6 +11,26 @@ import '../services/variable.dart';
 class SiswaRepositori {
   final _storage = FlutterSecureStorage();
 
+   Future<List<Map<String, dynamic>>> getJenjangList() async {
+    final response = await http.get(Uri.parse('$baseUrl/jenjang'));
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body)['data'];
+      return List<Map<String, dynamic>>.from(data);
+    } else {
+      throw Exception('Gagal memuat data jenjang');
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getKelasList(int jenjangId) async {
+    final response = await http.get(Uri.parse('$baseUrl/kelas/$jenjangId'));
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body)['data'];
+      return List<Map<String, dynamic>>.from(data);
+    } else {
+      throw Exception('Gagal memuat data kelas');
+    }
+  }
+
   Future<List<UserModel>> searchUsers(String keyword) async {
     final token = await _storage.read(key: 'token');
     final response = await http.get(
@@ -88,7 +108,7 @@ class SiswaRepositori {
       },
       body: jsonEncode({
         'latihan_video_id': latihanVideoId,
-        'jawaban_user': jawabanUser.trim(), // << Hati-hati, cukup trim saja
+        'jawaban_user': jawabanUser.trim(), 
       }),
     );
 
@@ -99,4 +119,6 @@ class SiswaRepositori {
 
     return json['is_benar'] == true;
   }
+
+
 }

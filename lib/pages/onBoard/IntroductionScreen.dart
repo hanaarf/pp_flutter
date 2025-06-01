@@ -96,7 +96,7 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
                           child: SvgPicture.asset(
                             page["imageLogo"]!,
                             width:
-                                double.tryParse(page["width"] ?? '') ?? 100.0,
+                                double.tryParse(page["width"] ?? '') ?? 130.0,
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -121,8 +121,8 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
                       count: _pages.length,
                       effect: const WormEffect(
                         spacing: 12,
-                        dotHeight: 10,
-                        dotWidth: 78,
+                        dotHeight: 15,
+                        dotWidth: 95,
                         dotColor: Colors.white,
                         activeDotColor: Color(0xffFE9365B),
                       ),
@@ -182,8 +182,8 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
                       borderRadius: BorderRadius.circular(30),
                     ),
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 25,
-                      vertical: 12,
+                      horizontal: 30,
+                      vertical: 16,
                     ),
                   ),
                   child: Text(
@@ -200,8 +200,8 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
                       borderRadius: BorderRadius.circular(30),
                     ),
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 25,
-                      vertical: 12,
+                      horizontal: 30,
+                      vertical: 16,
                     ),
                   ),
                   child: Text(

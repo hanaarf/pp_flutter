@@ -83,7 +83,7 @@ class LatihanMateriPage extends StatelessWidget {
                               'Latihan Materi',
                               style: GoogleFonts.quicksand(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 16,
+                                fontSize: 18,
                                 color: Colors.black,
                               ),
                             ),
@@ -116,7 +116,7 @@ class LatihanMateriPage extends StatelessWidget {
                                   side: BorderSide(color: Colors.black),
                                 ),
                                 padding: EdgeInsets.symmetric(
-                                  horizontal: 16,
+                                  horizontal: 20,
                                   vertical: 10,
                                 ),
                               ),
@@ -125,13 +125,13 @@ class LatihanMateriPage extends StatelessWidget {
                                 children: [
                                   Text(
                                     'Mulai Latihan',
-                                    style: TextStyle(
+                                    style: GoogleFonts.quicksand(
                                       color: Colors.black,
-                                      fontSize: 12,
+                                      fontSize: 14,
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
-                                  SizedBox(width: 5),
+                                  SizedBox(width: 10),
                                   Container(
                                     width: 20,
                                     height: 20,

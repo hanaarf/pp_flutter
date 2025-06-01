@@ -27,7 +27,6 @@ class _UserDetailPageState extends State<UserDetailPage> {
   @override
   void initState() {
     super.initState();
-    // Cek status follow saat halaman dibuka
     context.read<FollowBloc>().add(CheckFollowStatus(widget.user.id));
     fetchCounts();
   }
@@ -60,7 +59,7 @@ class _UserDetailPageState extends State<UserDetailPage> {
                 clipBehavior: Clip.none,
                 children: [
                   Container(
-                    height: 130,
+                    height: 165,
                     width: double.infinity,
                     color: const Color(0xFFFAAE2B),
                     child: SvgPicture.asset(

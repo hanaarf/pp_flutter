@@ -1,10 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:pp_flutter/pages/menitPage.dart';
-import '../services/variable.dart';
+import 'package:pp_flutter/repositories/siswa_repositori.dart';
 
 class KelasPage extends StatefulWidget {
   final int jenjangId;
@@ -21,6 +19,8 @@ class _KelasPageState extends State<KelasPage> {
   List kelasList = [];
   int? selectedKelasId;
 
+  final SiswaRepositori _repo = SiswaRepositori();
+
   @override
   void initState() {
     super.initState();
@@ -28,12 +28,13 @@ class _KelasPageState extends State<KelasPage> {
   }
 
   Future<void> fetchKelas() async {
-    final response = await http.get(Uri.parse('$baseUrl/kelas/${widget.jenjangId}'));
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body)['data'];
+    try {
+      final data = await _repo.getKelasList(widget.jenjangId);
       setState(() {
         kelasList = data;
       });
+    } catch (e) {
+      // handle error
     }
   }
 

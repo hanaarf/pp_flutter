@@ -123,7 +123,7 @@ class _PeringkatState extends State<Peringkat> {
               profile == null
                   ? Container(height: 80)
                   : Container(
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(28),
@@ -147,7 +147,7 @@ class _PeringkatState extends State<Peringkat> {
                             Text(
                               profile!.name,
                               style: GoogleFonts.quicksand(
-                                fontSize: 18,
+                                fontSize: 20,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -232,7 +232,7 @@ class _PeringkatState extends State<Peringkat> {
                               },
                               child: Container(
                                 margin: const EdgeInsets.only(bottom: 18),
-                                padding: const EdgeInsets.all(15),
+                                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 23),
                                 decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(16),
@@ -262,7 +262,7 @@ class _PeringkatState extends State<Peringkat> {
                                         user.name[0].toUpperCase() +
                                             user.name.substring(1),
                                         style: GoogleFonts.quicksand(
-                                          fontSize: 16,
+                                          fontSize: 17,
                                           fontWeight: FontWeight.w500,
                                         ),
                                       ),

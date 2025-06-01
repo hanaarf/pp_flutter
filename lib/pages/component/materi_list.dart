@@ -33,6 +33,7 @@ class _MateriListState extends State<MateriList> {
                 .toList(); 
 
     return Container(
+      padding: const EdgeInsets.only(bottom: 40),
       margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -40,7 +41,7 @@ class _MateriListState extends State<MateriList> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              SvgPicture.asset('assets/home/PutarPintar.svg'),
+              SvgPicture.asset('assets/home/PutarPintar.svg', width: 100,),
               GestureDetector(
                 onTap: () {
                   setState(() {
@@ -50,7 +51,7 @@ class _MateriListState extends State<MateriList> {
                 child: Text(
                   isExpanded ? 'Lihat Sedikit' : 'Lihat Semua Rekomen',
                   style: GoogleFonts.montserrat(
-                    fontSize: 11,
+                    fontSize: 13,
                     fontWeight: FontWeight.w600,
                     color: Colors.black87,
                   ),
@@ -58,7 +59,7 @@ class _MateriListState extends State<MateriList> {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 23),
 
           // List Materi
           Column(
@@ -97,8 +98,8 @@ class _MateriListState extends State<MateriList> {
                                   1.3,
                               child: Image.network(
                                 getYoutubeThumbnail(materi.videoUrl),
-                                width: 100,
-                                height: 70,
+                                width: 115,
+                                height: 80,
                                 fit: BoxFit.cover,
                               ),
                             ),
@@ -111,7 +112,7 @@ class _MateriListState extends State<MateriList> {
                                 Text(
                                  '${materi.judul} : ${materi.subjudul}',
                                   style: GoogleFonts.montserrat(
-                                    fontSize: 12,
+                                    fontSize: 15,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -121,7 +122,7 @@ class _MateriListState extends State<MateriList> {
                                       ? '${materi.deskripsi.substring(0, 40)}...'
                                       : materi.deskripsi,
                                   style: GoogleFonts.montserrat(
-                                    fontSize: 12,
+                                    fontSize: 13,
                                     fontWeight: FontWeight.w500,
                                     color: Colors.black87,
                                   ),

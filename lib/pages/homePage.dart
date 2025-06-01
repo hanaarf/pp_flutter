@@ -262,7 +262,7 @@ class _HomePageState extends State<HomePage> {
               clipBehavior: Clip.none,
               children: [
                 Container(
-                  height: 180,
+                  height: 210,
                   decoration: BoxDecoration(
                     color: const Color(0xFFFAAE2B),
                     borderRadius: const BorderRadius.vertical(
@@ -276,13 +276,13 @@ class _HomePageState extends State<HomePage> {
                     child: SvgPicture.asset(
                       'assets/home/bg-home.svg', 
                       fit: BoxFit.cover,
-                      height: 145,
+                      height: 155,
                       width: double.infinity,
                     ),
                   ),
                 ),
                 Positioned(
-                  top: 110,
+                  top: 135,
                   left: 20,
                   right: 20,
                   child: Container(
@@ -302,7 +302,7 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         SizedBox(
                           width: 75,
-                          height: 75,
+                          height: 87,
                           child: Stack(
                             clipBehavior: Clip.none,
                             children: [
@@ -315,14 +315,14 @@ class _HomePageState extends State<HomePage> {
                                     key: ValueKey(
                                       isLoadingProfile ? 'jenjang' : jenjang,
                                     ),
-                                    width: 65,
+                                    width: 70,
                                   ),
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        const SizedBox(width: 16),
+                        const SizedBox(width: 22),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -330,7 +330,7 @@ class _HomePageState extends State<HomePage> {
                               Text(
                                 'Halo $userName',
                                 style: GoogleFonts.quicksand(
-                                  fontSize: 15,
+                                  fontSize: 18,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -366,7 +366,7 @@ class _HomePageState extends State<HomePage> {
                                       child: Text(
                                         'Belajar Sekarang!',
                                         style: GoogleFonts.montserrat(
-                                          fontSize: 12,
+                                          fontSize: 14,
                                           color: Colors.black,
                                           fontWeight: FontWeight.w500,
                                         ),
@@ -400,7 +400,7 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(height: 60),
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 20),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               decoration: BoxDecoration(
                 color: Colors.white,
                 border: Border.all(color: const Color(0xff9E9E9E)),
@@ -440,7 +440,7 @@ class _HomePageState extends State<HomePage> {
 
             Container(
               margin: EdgeInsets.only(top: 20),
-              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 25),
               color: Colors.white,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -448,11 +448,11 @@ class _HomePageState extends State<HomePage> {
                   Text(
                     'Fitur',
                     style: GoogleFonts.quicksand(
-                      fontSize: 16,
+                      fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 6),
+                  SizedBox(height: 12),
                   Row(
                     children: [
                       Flexible(
@@ -478,8 +478,8 @@ class _HomePageState extends State<HomePage> {
                                 },
                                 child: SvgPicture.asset(
                                   'assets/home/materi.svg',
-                                  width: 40,
-                                  height: 40,
+                                  width: 55,
+                                  height: 55,
                                 ),
                               ),
                             ),
@@ -487,14 +487,14 @@ class _HomePageState extends State<HomePage> {
                             Text(
                               'Layar Belajar',
                               style: GoogleFonts.montserrat(
-                                fontSize: 12,
+                                fontSize: 14,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
                           ],
                         ),
                       ),
-                      const SizedBox(width: 20),
+                      const SizedBox(width: 45),
                       Flexible(
                         child: Column(
                           children: [
@@ -526,8 +526,8 @@ class _HomePageState extends State<HomePage> {
 
                                 child: SvgPicture.asset(
                                   'assets/home/latihan.svg',
-                                  width: 40,
-                                  height: 40,
+                                  width: 55,
+                                  height: 55,
                                 ),
                               ),
                             ),
@@ -535,7 +535,7 @@ class _HomePageState extends State<HomePage> {
                             Text(
                               'Latihan Seru',
                               style: GoogleFonts.montserrat(
-                                fontSize: 12,
+                                fontSize: 14,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),

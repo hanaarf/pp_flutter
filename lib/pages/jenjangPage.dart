@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:pp_flutter/pages/kelasPage.dart';
-import '../services/variable.dart';
+import 'package:pp_flutter/repositories/siswa_repositori.dart';
 
 class JenjangPage extends StatefulWidget {
   @override
@@ -14,6 +12,8 @@ class _JenjangPageState extends State<JenjangPage> {
   List jenjangList = [];
   int? _selectedJenjangId;
 
+  final SiswaRepositori _repo = SiswaRepositori();
+
   @override
   void initState() {
     super.initState();
@@ -21,12 +21,13 @@ class _JenjangPageState extends State<JenjangPage> {
   }
 
   Future<void> fetchJenjang() async {
-    final response = await http.get(Uri.parse('$baseUrl/jenjang'));
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body)['data'];
+    try {
+      final data = await _repo.getJenjangList();
       setState(() {
         jenjangList = data;
       });
+    } catch (e) {
+      // 
     }
   }
 
