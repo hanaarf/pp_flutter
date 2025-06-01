@@ -52,7 +52,6 @@ class _HomePageState extends State<HomePage> {
         jenjang = profile.jenjang.toLowerCase();
         isLoadingProfile = false;
         _belajarMenitPerHari = profile.belajarMenitPerHari > 0 ? profile.belajarMenitPerHari : 15;
-        // Selalu reset timer setiap kali user masuk HomePage atau login
         _globalStartTime = DateTime.now();
         _globalSudahPopup = false;
       });
@@ -68,14 +67,14 @@ class _HomePageState extends State<HomePage> {
   void _startBelajarTimer() {
     _timer?.cancel();
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (!mounted) return; // <-- Tambahkan ini
+      if (!mounted) return; 
       if (_globalStartTime == null) return;
       final now = DateTime.now();
       final elapsed = now.difference(_globalStartTime!).inSeconds;
       final total = _belajarMenitPerHari * 60;
       final sisa = total - elapsed;
       if (sisa > 0) {
-        if (!mounted) return; // <-- Tambahkan ini juga sebelum setState
+        if (!mounted) return; 
         setState(() {
           _detikSisa = sisa;
         });
@@ -94,7 +93,6 @@ class _HomePageState extends State<HomePage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Cek waktu habis setiap kali homepage muncul
     if (_globalStartTime != null && !_globalSudahPopup) {
       final now = DateTime.now();
       final elapsed = now.difference(_globalStartTime!).inSeconds;
@@ -239,13 +237,13 @@ class _HomePageState extends State<HomePage> {
   Future<void> fetchRekomendasiMateri() async {
     try {
       final result = await MateriRepository().getRekomendasiMateri();
-      if (!mounted) return; // Tambahkan ini
+      if (!mounted) return; 
       setState(() {
         rekomendasiMateri = result;
         isLoadingMateri = false;
       });
     } catch (e) {
-      if (!mounted) return; // Tambahkan ini juga
+      if (!mounted) return; 
       setState(() {
         isLoadingMateri = false;
       });

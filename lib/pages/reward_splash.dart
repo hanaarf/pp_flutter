@@ -64,7 +64,7 @@ class _RewardSplashState extends State<RewardSplash> {
               ),
               const SizedBox(height: 24),
               Text(
-                'Selamat kamu mencapai ${widget.xp} XP!',
+                'Horee! Kamu baru saja mendapatkan  ${widget.xp} XP!',
                 style: GoogleFonts.quicksand(
                   fontSize: 22,
                   fontWeight: FontWeight.w600,
