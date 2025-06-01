@@ -84,12 +84,14 @@ class _SigninPagesState extends State<SigninPages> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _buildInputLabel('Email'),
+                         SizedBox(height: 5),
                         _buildTextField(
                           controller: _emailController,
                           hintText: 'Masukkan email',
                         ),
                         SizedBox(height: 20),
                         _buildInputLabel('Sandi'),
+                         SizedBox(height: 5),
                         _buildTextField(
                           controller: _passwordController,
                           hintText: 'Masukkan sandi',

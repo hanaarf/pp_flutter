@@ -20,7 +20,7 @@ class RegistBloc extends Bloc<AuthEvent, AuthState> {
           ),
         );
 
-        // Simpan token ke secure storage
+       
         await authRepository.saveToken(data.token);
         emit(AuthSuccess(token: data.token));
       } catch (e) {

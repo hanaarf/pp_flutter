@@ -57,7 +57,6 @@ class _ProfilePageState extends State<ProfilePage> {
         selectedAvatar = 'assets/avatar/${data.image ?? 'avatar.png'}';
         isLoading = false;
       });
-      // Panggil fetchCounts setelah profileData terisi
       fetchCounts();
     } catch (e) {
       if (!mounted) return;
@@ -79,7 +78,7 @@ class _ProfilePageState extends State<ProfilePage> {
         sudahUlasan = status;
       });
     } catch (e) {
-      // Optional: tampilkan error
+      //
     }
   }
 
@@ -431,7 +430,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                       ),
                                 ),
                               ).then((_) {
-                                // setelah kembali, panggil ulang fetchProfile
                                 fetchProfile();
                               });
                             },
@@ -507,7 +505,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               );
                               setState(() {
                                 sudahUlasan =
-                                    true; // Form hilang setelah sukses kirim
+                                    true; 
                               });
                             } else if (state is UlasanFailure) {
                               _showCustomSnackBar(

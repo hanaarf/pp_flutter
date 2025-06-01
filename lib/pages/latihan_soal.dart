@@ -26,7 +26,6 @@ class _QuizPageState extends State<QuizPage> {
 
   final AudioPlayer _audioPlayer = AudioPlayer();
 
-  // Tambahkan variabel untuk menyimpan XP sebelum latihan
   int xpSebelum = 0;
 
   Future<void> playSound(String assetPath) async {
@@ -39,7 +38,7 @@ class _QuizPageState extends State<QuizPage> {
   @override
   void initState() {
     super.initState();
-    _currentIndex = 0; // Reset index setiap buka halaman
+    _currentIndex = 0; 
     context.read<LatihanSoalBloc>().add(FetchLatihanSoal(widget.materiId));
     fetchXpSebelum();
   }
@@ -66,7 +65,7 @@ class _QuizPageState extends State<QuizPage> {
               return const Center(child: CircularProgressIndicator());
             } else if (state is LatihanSoalLoaded) {
               final soal = state.soal.where((s) => s.sudahDijawab != true).toList();
-              // Jika soal kosong/null, tampilkan pesan
+              // soal kosong
               if (soal.isEmpty) {
                 return Scaffold(
                   appBar: AppBar(
@@ -98,7 +97,7 @@ class _QuizPageState extends State<QuizPage> {
                   ),
                 );
               }
-              // Jika index melebihi jumlah soal, reset ke 0 lalu cek lagi
+              // Jika index melebihi soal
               if (_currentIndex >= soal.length) {
                 Future.microtask(() {
                   Navigator.pushReplacement(
@@ -177,7 +176,6 @@ class _QuizPageState extends State<QuizPage> {
                         ],
                       ),
                       const SizedBox(height: 50),
-
                       // Pertanyaan
                       Center(
                         child: Html(
@@ -194,7 +192,6 @@ class _QuizPageState extends State<QuizPage> {
                         ),
                       ),
                       const SizedBox(height: 32),
-
                       // Pilihan jawaban
                       ...options.map((option) {
                         final key = option['key']!;

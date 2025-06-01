@@ -200,14 +200,8 @@ class _PeringkatState extends State<Peringkat> {
                             final user = leaderboardUsers[index];
                             return GestureDetector(
                               onTap: () {
-                                // Pastikan profile sudah di-load
                                 if (profile != null && user.id == profile!.id) {
-                                  // Pindah ke tab Profile (index 2)
-                                  Navigator.of(context).popUntil((route) => route.isFirst); // Kembali ke root
-                                  // Ganti tab ke Profile
-                                  // Jika pakai BottomNavbar sebagai root:
-                                  // Kirim event ke BottomNavbar atau gunakan state management
-                                  // Atau, jika BottomNavbar di-rebuild, bisa pakai:
+                                  Navigator.of(context).popUntil((route) => route.isFirst); 
                                   Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(

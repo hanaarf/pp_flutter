@@ -186,9 +186,9 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
                       vertical: 12,
                     ),
                   ),
-                  child: const Text(
+                  child: Text(
                     "Lewati",
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: GoogleFonts.quicksand(fontWeight: FontWeight.bold),
                   ),
                 ),
                 ElevatedButton(
@@ -206,7 +206,7 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
                   ),
                   child: Text(
                     _currentIndex == _pages.length - 1 ? "Selesai" : "Lanjut",
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+                    style: GoogleFonts.quicksand(fontWeight: FontWeight.bold),
                   ),
                 ),
               ],

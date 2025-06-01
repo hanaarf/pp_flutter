@@ -86,7 +86,7 @@ class _ForgotpwState extends State<Forgotpw> {
           }
 
           if (state is ForgotPasswordSuccess) {
-            _emailController.clear(); // <-- Kosongkan input email
+            _emailController.clear(); 
             _showCustomSnackBar(
               context,
               'Link reset password telah dikirim ke email kamu!',

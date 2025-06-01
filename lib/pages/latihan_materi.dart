@@ -53,7 +53,6 @@ class LatihanMateriPage extends StatelessWidget {
             return Center(child: CircularProgressIndicator());
           } else if (state is LatihanMateriLoaded) {
             final materi = state.materi;
-            // Cari item pertama yang belum selesai
             final notDoneList = materi.where((item) => item.statusLatihan != 'selesai');
             final firstNotDone = notDoneList.isNotEmpty ? notDoneList.first : null;
 

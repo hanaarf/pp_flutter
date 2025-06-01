@@ -10,9 +10,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pp_flutter/blocs/follow/follow_bloc.dart';
 import 'package:pp_flutter/blocs/follow/follow_event.dart';
 import 'package:pp_flutter/blocs/follow/follow_state.dart';
-import 'package:pp_flutter/models/response/user_follow_response.dart'; // Tambahkan ini
+import 'package:pp_flutter/models/response/user_follow_response.dart'; 
 
-// Halaman Mengikuti
 class MengikutiPage extends StatefulWidget {
   final int userId;
   const MengikutiPage({Key? key, required this.userId}) : super(key: key);
@@ -48,7 +47,7 @@ class _MengikutiPageState extends State<MengikutiPage> {
       final response = await _repo.getFollowing(widget.userId);
       if (!mounted) return;
       setState(() {
-        following = response.data; // Ambil dari .data
+        following = response.data; 
         isLoading = false;
       });
     } catch (e) {
@@ -56,7 +55,6 @@ class _MengikutiPageState extends State<MengikutiPage> {
       setState(() {
         isLoading = false;
       });
-      // handle error
     }
   }
 
@@ -139,7 +137,6 @@ class _MengikutiPageState extends State<MengikutiPage> {
                                 ),
                               ),
                             ),
-                            // Tambahkan pengecekan ini:
                             if (profile == null || user.id != profile!.id)
                               BlocBuilder<FollowBloc, FollowState>(
                                 builder: (context, state) {

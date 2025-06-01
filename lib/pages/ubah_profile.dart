@@ -65,7 +65,7 @@ class _UbahProfileState extends State<UbahProfile> {
                           try {
                             await AuthRepository().updateAvatar(
                               avatarName,
-                            ); // simpan ke database
+                            ); 
 
                             if (!mounted) return;
                             setState(() {
@@ -185,7 +185,7 @@ class _UbahProfileState extends State<UbahProfile> {
                 constraints: BoxConstraints(minHeight: constraints.maxHeight),
                 child: Column(
                   children: [
-                    // Bagian background oranye + dekorasi SVG
+                   
                     Stack(
                       clipBehavior: Clip.none,
                       children: [
@@ -199,7 +199,7 @@ class _UbahProfileState extends State<UbahProfile> {
                           ),
                         ),
 
-                        // Icon Back di atas profile.svg
+                     
                         Positioned(
                           top: 15,
                           left: 20,
@@ -226,7 +226,7 @@ class _UbahProfileState extends State<UbahProfile> {
                       ],
                     ),
 
-                    // Avatar dan kontainer putih
+                  
                     Stack(
                       clipBehavior: Clip.none,
                       alignment: Alignment.center,
@@ -462,7 +462,7 @@ class _UbahProfileState extends State<UbahProfile> {
                           ),
                         ),
 
-                        // Avatar tumpang tindih
+                     
                         Positioned(
                           top: -60,
                           child: Stack(

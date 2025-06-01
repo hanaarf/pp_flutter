@@ -35,7 +35,6 @@ class _MenitPageState extends State<MenitPage> {
         ),
       );
 
-      // Tampilkan dialog selama 3 detik
       showDialog(
         context: context,
         barrierDismissible: false,
@@ -103,7 +102,7 @@ class _MenitPageState extends State<MenitPage> {
 
       await Future.delayed(const Duration(seconds: 2));
       if (mounted) {
-        Navigator.of(context).pop(); // Tutup dialog
+        Navigator.of(context).pop(); 
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(

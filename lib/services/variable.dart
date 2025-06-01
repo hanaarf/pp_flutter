@@ -1,1 +1,1 @@
-const String baseUrl = 'https://putarpintar.my.id/api';
+const String baseUrl = 'http://putarpintar.my.id/api';

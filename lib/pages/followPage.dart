@@ -59,8 +59,8 @@ class _FollowPageState extends State<FollowPage> with SingleTickerProviderStateM
       body: TabBarView(
         controller: _tabController,
         children: [
-          MengikutiPage(userId: widget.userId), // Kirim userId
-          PengikutPage(userId: widget.userId),  // Kirim userId
+          MengikutiPage(userId: widget.userId), 
+          PengikutPage(userId: widget.userId), 
         ],
       ),
     );

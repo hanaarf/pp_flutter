@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:pp_flutter/blocs/detailMateri/detail_bloc.dart';
 import 'package:pp_flutter/blocs/detailMateri/detail_event.dart';
 import 'package:pp_flutter/blocs/detailMateri/detail_state.dart';
@@ -88,7 +89,7 @@ class _DetailMateriPageState extends State<DetailMateriPage> {
                             padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
                             child: Text(
                                '${materi.judul} : ${materi.subjudul}',
-                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                              style: GoogleFonts.montserrat(fontSize: 18, fontWeight: FontWeight.bold),
                             ),
                           ),
                           const Divider(thickness: 1, height: 1),
@@ -104,7 +105,7 @@ class _DetailMateriPageState extends State<DetailMateriPage> {
                                       const SizedBox(width: 4),
                                       Text(
                                         materi.jenjang ?? '-',
-                                        style: const TextStyle(fontWeight: FontWeight.bold),
+                                        style: GoogleFonts.quicksand(fontWeight: FontWeight.bold),
                                       ),
                                     ],
                                   ),
@@ -114,7 +115,7 @@ class _DetailMateriPageState extends State<DetailMateriPage> {
                                       const SizedBox(width: 4),
                                       Text(
                                         materi.kelas ?? '-',
-                                        style: const TextStyle(fontWeight: FontWeight.bold),
+                                        style: GoogleFonts.quicksand(fontWeight: FontWeight.bold),
                                       ),
                                     ],
                                   ),
@@ -126,7 +127,7 @@ class _DetailMateriPageState extends State<DetailMateriPage> {
                           ),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
-                            child: const Text("Deskripsi", style: TextStyle(fontWeight: FontWeight.bold)),
+                            child: Text("Deskripsi", style: GoogleFonts.quicksand(fontWeight: FontWeight.bold)),
                           ),
                           Container(
                             margin: const EdgeInsets.only(left: 25),
@@ -140,7 +141,7 @@ class _DetailMateriPageState extends State<DetailMateriPage> {
                             padding: const EdgeInsets.symmetric(horizontal: 25),
                             child: Text(
                               materi.deskripsi,
-                              style: const TextStyle(fontSize: 14),
+                              style: GoogleFonts.quicksand(fontSize: 14),
                             ),
                           ),
                           const SizedBox(height: 24),

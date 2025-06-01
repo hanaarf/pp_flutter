@@ -22,7 +22,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
   void initState() {
     super.initState();
 
-    // Controller untuk bounce lingkaran
+    // bounce circle
     _circleController = AnimationController(
       duration: const Duration(milliseconds: 2000),
       vsync: this,
@@ -35,7 +35,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
       ),
     );
 
-    // Controller untuk fade out lingkaran
+    // fade out circle
     _fadeController = AnimationController(
       duration: const Duration(milliseconds: 800),
       vsync: this,
@@ -48,24 +48,20 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
       ),
     );
 
-    // Jalankan animasi bounce lingkaran
     Future.delayed(const Duration(milliseconds: 500), () {
       _circleController.forward();
     });
 
-    // Ganti background putih setelah bounce
     Future.delayed(const Duration(milliseconds: 1800), () {
       setState(() {
         _backgroundColor = Colors.white;
       });
     });
 
-    // Setelah bounce selesai, jalankan fade out
     Future.delayed(const Duration(milliseconds: 2400), () {
       _fadeController.forward();
     });
 
-    // Setelah fade selesai, langsung pindah page
     Future.delayed(const Duration(milliseconds: 3300), () {
       Navigator.pushReplacement(
         context,

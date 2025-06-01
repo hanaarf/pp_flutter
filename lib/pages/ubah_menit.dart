@@ -175,7 +175,6 @@ class _UbahMenitState extends State<UbahMenit> {
         selectedAvatar = 'assets/avatar/${data.image}';
       });
     } catch (e) {
-      // opsional: tampilkan error atau biarkan default avatar
       debugPrint('Gagal ambil profil: $e');
     }
   }
@@ -197,7 +196,6 @@ class _UbahMenitState extends State<UbahMenit> {
               constraints: BoxConstraints(minHeight: constraints.maxHeight),
               child: Column(
                 children: [
-                  // Bagian background oranye + dekorasi SVG
                   Stack(
                     clipBehavior: Clip.none,
                     children: [
@@ -210,8 +208,6 @@ class _UbahMenitState extends State<UbahMenit> {
                           fit: BoxFit.cover,
                         ),
                       ),
-
-                      // Icon Back di atas profile.svg
                       Positioned(
                         top: 15,
                         left: 20,
@@ -220,7 +216,7 @@ class _UbahMenitState extends State<UbahMenit> {
                             decoration: BoxDecoration(
                               color: Colors.white.withOpacity(
                                 0.3,
-                              ), // abu transparan
+                              ), 
                               shape: BoxShape.circle,
                             ),
                             child: IconButton(
@@ -237,8 +233,6 @@ class _UbahMenitState extends State<UbahMenit> {
                       ),
                     ],
                   ),
-
-                  // Avatar dan kontainer putih
                   Stack(
                     clipBehavior: Clip.none,
                     alignment: Alignment.center,
@@ -323,7 +317,7 @@ class _UbahMenitState extends State<UbahMenit> {
                         ),
                       ),
 
-                      // Avatar tumpang tindih
+                     
                       Positioned(
                         top: -60,
                         child: Stack(

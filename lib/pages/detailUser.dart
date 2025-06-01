@@ -50,7 +50,6 @@ class _UserDetailPageState extends State<UserDetailPage> {
       body: BlocListener<FollowBloc, FollowState>(
         listener: (context, state) async {
           if (state is FollowLoaded) {
-            // Setelah follow/unfollow sukses, refresh count
             await fetchCounts();
           }
         },
@@ -70,7 +69,7 @@ class _UserDetailPageState extends State<UserDetailPage> {
                     ),
                   ),
                   Positioned(
-                    top: 30, // Atur posisi sesuai kebutuhan
+                    top: 30,
                     left: 16,
                     child: Container(
                       decoration: BoxDecoration(
@@ -91,6 +90,11 @@ class _UserDetailPageState extends State<UserDetailPage> {
                 children: [
                   Container(
                     width: double.infinity,
+                    constraints: BoxConstraints(
+                      minHeight:
+                          MediaQuery.of(context).size.height -
+                          70, 
+                    ),
                     decoration: const BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.vertical(
@@ -200,7 +204,6 @@ class _UserDetailPageState extends State<UserDetailPage> {
                           ),
                         ),
                         const SizedBox(height: 16),
-                        // Tombol Ikuti
                         BlocBuilder<FollowBloc, FollowState>(
                           builder: (context, state) {
                             bool isFollowing = false;
@@ -231,7 +234,7 @@ class _UserDetailPageState extends State<UserDetailPage> {
                                               FollowUser(widget.user.id),
                                             );
                                           }
-                                          // Tidak perlu await fetchCounts() di sini!
+                                         
                                         },
                                 child: Text(
                                   isFollowing ? "Batal Ikuti" : "Ikuti",
@@ -246,7 +249,6 @@ class _UserDetailPageState extends State<UserDetailPage> {
                           },
                         ),
                         const SizedBox(height: 30),
-                        // Informasi
                         Text(
                           "Informasi",
                           style: GoogleFonts.montserrat(
@@ -269,7 +271,6 @@ class _UserDetailPageState extends State<UserDetailPage> {
                           ],
                         ),
                         const SizedBox(height: 30),
-                        // Pencapaian
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -302,7 +303,6 @@ class _UserDetailPageState extends State<UserDetailPage> {
                           ],
                         ),
                         const SizedBox(height: 16),
-                        // Box Pencapaian
                         Container(
                           width: double.infinity,
                           padding: const EdgeInsets.all(16),

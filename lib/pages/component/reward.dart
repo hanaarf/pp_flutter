@@ -46,7 +46,6 @@ import 'package:flutter_svg/flutter_svg.dart';
       );
     }
 
-    // Tambahkan jarak antar icon, tapi tidak setelah icon terakhir
     List<Widget> spacedIcons = [];
     for (int i = 0; i < icons.length; i++) {
       spacedIcons.add(icons[i]);

@@ -157,7 +157,7 @@ class _HomePageState extends State<HomePage> {
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () {
-                            SystemNavigator.pop(); // keluar aplikasi
+                            SystemNavigator.pop(); 
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Color(0xffFAAE2B),
@@ -550,7 +550,7 @@ class _HomePageState extends State<HomePage> {
 
             Container(
               color: Colors.white,
-              margin: EdgeInsets.only(top: 20),
+              margin: EdgeInsets.only(top: 20,),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

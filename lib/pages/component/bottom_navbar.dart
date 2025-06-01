@@ -62,7 +62,6 @@ class _BottomNavbarState extends State<BottomNavbar> {
   Widget _buildNavItem(String svgAsset, String label, int index) {
     bool isSelected = _selectedIndex == index;
 
-    // Ganti nama file jika aktif
     String assetPath = svgAsset;
     if (isSelected) {
       assetPath = svgAsset.replaceFirst('.svg', '-act.svg');
@@ -80,7 +79,6 @@ class _BottomNavbarState extends State<BottomNavbar> {
               assetPath,
               width: 24,
               height: 24,
-              // Hapus colorFilter, biarkan warna asli SVG
             ),
             const SizedBox(height: 4),
             Text(

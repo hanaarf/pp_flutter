@@ -47,7 +47,7 @@ class _PengikutPageState extends State<PengikutPage> {
     try {
       final response = await _repo.getFollowers(widget.userId);
       setState(() {
-        followers = response.data; // akses list user dari response
+        followers = response.data; 
         isLoading = false;
       });
     } catch (e) {
@@ -55,7 +55,6 @@ class _PengikutPageState extends State<PengikutPage> {
       setState(() {
         isLoading = false;
       });
-      // handle error
     }
   }
 
@@ -138,7 +137,6 @@ class _PengikutPageState extends State<PengikutPage> {
                                 ),
                               ),
                             ),
-                            // Tambahkan pengecekan berikut:
                             if (profile == null || user.id != profile!.id)
                               BlocBuilder<FollowBloc, FollowState>(
                                 builder: (context, state) {

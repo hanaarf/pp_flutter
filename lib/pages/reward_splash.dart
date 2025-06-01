@@ -26,7 +26,7 @@ class _RewardSplashState extends State<RewardSplash> {
       case 600:
         return 'assets/lottie/reward600.json';
       default:
-        return 'assets/lottie/reward.json'; // fallback
+        return 'assets/lottie/reward.json'; 
     }
   }
 

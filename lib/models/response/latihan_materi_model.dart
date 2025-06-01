@@ -1,4 +1,3 @@
-// filepath: lib/models/latihan_materi_model.dart
 class LatihanMateriModel {
   final int id;
   final String judul;
