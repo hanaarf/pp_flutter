@@ -200,7 +200,7 @@ class _UbahMenitState extends State<UbahMenit> {
                     clipBehavior: Clip.none,
                     children: [
                       Container(
-                        height: 145,
+                        height: 160,
                         width: double.infinity,
                         color: const Color(0xFFFAAE2B),
                         child: SvgPicture.asset(
@@ -214,9 +214,7 @@ class _UbahMenitState extends State<UbahMenit> {
                         child: SafeArea(
                           child: Container(
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(
-                                0.3,
-                              ), 
+                              color: Colors.white.withOpacity(0.3),
                               shape: BoxShape.circle,
                             ),
                             child: IconButton(
@@ -239,6 +237,11 @@ class _UbahMenitState extends State<UbahMenit> {
                     children: [
                       Container(
                         width: double.infinity,
+                        constraints: BoxConstraints(
+                          minHeight:
+                              MediaQuery.of(context).size.height -
+                              160, // 160 = tinggi header kuning
+                        ),
                         decoration: const BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.vertical(
@@ -317,7 +320,6 @@ class _UbahMenitState extends State<UbahMenit> {
                         ),
                       ),
 
-                     
                       Positioned(
                         top: -60,
                         child: Stack(

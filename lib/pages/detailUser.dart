@@ -72,7 +72,7 @@ class _UserDetailPageState extends State<UserDetailPage> {
                     left: 16,
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.8),
+                        color: Colors.white.withOpacity(0.3),
                         shape: BoxShape.circle,
                       ),
                       child: IconButton(
@@ -111,14 +111,14 @@ class _UserDetailPageState extends State<UserDetailPage> {
                                 widget.user.nama[0].toUpperCase() +
                                     widget.user.nama.substring(1),
                                 style: GoogleFonts.quicksand(
-                                  fontSize: 20,
+                                  fontSize: 25,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
                               Text(
                                 '${widget.user.jenjang} : ${widget.user.kelas}',
                                 style: GoogleFonts.quicksand(
-                                  fontSize: 16,
+                                  fontSize: 20,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -251,7 +251,7 @@ class _UserDetailPageState extends State<UserDetailPage> {
                         Text(
                           "Informasi",
                           style: GoogleFonts.montserrat(
-                            fontSize: 18,
+                            fontSize: 22,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -264,7 +264,7 @@ class _UserDetailPageState extends State<UserDetailPage> {
                               'Bergabung ${_formatTanggal(widget.user.createdAt)}',
                               style: GoogleFonts.quicksand(
                                 color: Colors.grey,
-                                fontSize: 14,
+                                fontSize: 16,
                               ),
                             ),
                           ],
@@ -276,7 +276,7 @@ class _UserDetailPageState extends State<UserDetailPage> {
                             Text(
                               "Pencapaian",
                               style: GoogleFonts.montserrat(
-                                fontSize: 18,
+                                fontSize: 22,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),

@@ -63,9 +63,7 @@ class _UbahProfileState extends State<UbahProfile> {
                         onTap: () async {
                           final avatarName = path.split('/').last;
                           try {
-                            await AuthRepository().updateAvatar(
-                              avatarName,
-                            ); 
+                            await AuthRepository().updateAvatar(avatarName);
 
                             if (!mounted) return;
                             setState(() {
@@ -149,7 +147,7 @@ class _UbahProfileState extends State<UbahProfile> {
         _namaController.text = profile.name;
         _selectedJenjang = profile.jenjang.toUpperCase();
         _selectedKelas = RegExp(r'\d+').firstMatch(profile.kelas)?.group(0);
-        selectedAvatar = 'assets/avatar/${profile.image ?? 'avatar.png'}'; 
+        selectedAvatar = 'assets/avatar/${profile.image ?? 'avatar.png'}';
         isLoading = false;
       });
     } catch (e) {
@@ -185,12 +183,11 @@ class _UbahProfileState extends State<UbahProfile> {
                 constraints: BoxConstraints(minHeight: constraints.maxHeight),
                 child: Column(
                   children: [
-                   
                     Stack(
                       clipBehavior: Clip.none,
                       children: [
                         Container(
-                          height: 145,
+                          height: 160,
                           width: double.infinity,
                           color: const Color(0xFFFAAE2B),
                           child: SvgPicture.asset(
@@ -199,7 +196,6 @@ class _UbahProfileState extends State<UbahProfile> {
                           ),
                         ),
 
-                     
                         Positioned(
                           top: 15,
                           left: 20,
@@ -226,13 +222,17 @@ class _UbahProfileState extends State<UbahProfile> {
                       ],
                     ),
 
-                  
                     Stack(
                       clipBehavior: Clip.none,
                       alignment: Alignment.center,
                       children: [
                         Container(
                           width: double.infinity,
+                          constraints: BoxConstraints(
+                            minHeight:
+                                MediaQuery.of(context).size.height -
+                                160, 
+                          ),
                           decoration: const BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.vertical(
@@ -462,7 +462,6 @@ class _UbahProfileState extends State<UbahProfile> {
                           ),
                         ),
 
-                     
                         Positioned(
                           top: -60,
                           child: Stack(
